@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>राजस्थान की जनजातियाँ: गहन और विस्तृत अन्वेषण</title>
+    <!-- Chosen Palette: Earthy Harmony -->
+    <!-- Application Structure Plan: The SPA is designed as a multi-tabbed interactive dashboard. Primary tabs cover 'Overview', four major tribes (मीणा, भील, गरासिया, सहरिया), 'Scheduled Areas & Other Tribes', and 'Development Programs'. This structure ensures logical grouping. Within each tribe's tab, secondary navigation (buttons) dynamically renders highly detailed content blocks for 'Social Life', 'Economy', and 'Culture', adhering to the user's strict requirement of including even minor details (e.g., specific clothing names, social customs like Mayas or Gola). The 'Scheduled Areas' tab provides crucial legislative and administrative details in a list/card format. -->
+    <!-- Visualization & Content Choices: Report Info: Overall ST statistics -> Goal: Inform -> Viz/Presentation: High-impact Stat Cards (HTML/Tailwind) & Doughnut Chart (Chart.js/Canvas). Report Info: District-wise ST population -> Goal: Compare/Organize -> Viz/Presentation: Interactive Bar Chart (Chart.js/Canvas) with toggle to update. Report Info: Detailed customs/vocal names (e.g., ठेपाड़ा, मायस, डहलिया) -> Goal: Inform/Organize -> Viz/Presentation: Detailed, structured lists within dynamic text blocks (HTML/Tailwind) for clarity, ensuring no detail is skipped. Report Info: Legislative details (12 tribes, 3/25 seats, 5th Schedule) -> Goal: Inform/Organize -> Viz/Presentation: Multi-panel detail cards and a table for geographical distribution. NO SVG/Mermaid used. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&family=Tiro+Devanagari+Hindi:ital@0;1&family=Baloo+Bhaina+2:wght@700;800&display=swap" rel="stylesheet">
+    <style>
+        body { 
+            font-family: 'Tiro Devanagari Hindi', serif; 
+            background-color: #f4f1de; 
+            color: #3d405b; 
+        }
+        .main-title-font { font-family: 'Baloo Bhaina 2', cursive; letter-spacing: 1px; }
+        .chart-container { position: relative; width: 100%; max-width: 650px; margin: 1rem auto; height: 320px; max-height: 400px; }
+        @media (min-width: 768px) { .chart-container { height: 380px; } }
+        .tab { cursor: pointer; padding: 0.75rem 1.25rem; border-bottom: 4px solid transparent; transition: all 0.3s ease; color: #8d99ae; }
+        .tab.active { border-bottom-color: #e07a5f; color: #3d405b; font-weight: 700; }
+        .tab:hover { background-color: #f8f6f0; } 
+        .content-section { display: none; }
+        .content-section.active { display: block; animation: fadeInUp 0.5s forwards; }
+        .sub-nav-btn { background-color: #e9ecef; color: #495057; padding: 0.5rem 1rem; border-radius: 9999px; transition: all 0.3s ease; border: 1px solid #dee2e6; }
+        .sub-nav-btn:hover { background-color: #dee2e6; }
+        .sub-nav-btn.active { background-color: #81b29a; color: white; border-color: #81b29a; box-shadow: 0 4px 6px -1px rgba(129, 178, 154, 0.4); }
+        .info-card { background-color: white; border-left: 5px solid #81b29a; transition: transform 0.3s ease-out; }
+        .info-card:hover { transform: translateY(-3px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); }
+        .stat-card h3 { color: #8d99ae; }
+        .stat-card p { color: #e07a5f; }
+        .stat-value { transition: color 0.3s ease; }
+        .accordion-button { transition: background-color 0.2s; }
+        .accordion-content { max-height: 0; overflow: hidden; transition: max-height 0.4s cubic-bezier(0.86, 0, 0.07, 1); }
+        .animated-card { animation: fadeIn 0.5s ease-out; }
+        .detail-box { border: 1px solid #81b29a; padding: 1rem; border-radius: 0.5rem; background-color: #f8f6f0; }
+        .detail-item { font-weight: 500; margin-top: 0.5rem; }
+        
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body class="antialiased">
+
+    <div class="container mx-auto px-4 py-6">
+        <header class="text-center mb-8">
+            <h1 class="text-4xl md:text-6xl font-extrabold text-[#3d405b] main-title-font animate-fadeInUp">राजस्थान की जनजातियाँ - गहन अन्वेषण</h1>
+            <p class="text-lg text-gray-600 mt-2">सभी प्रमुख और सूक्ष्म विवरणों सहित 2011 जनगणना रिपोर्ट का विस्तृत विश्लेषण।</p>
+        </header>
+
+        <nav id="main-nav" class="bg-white rounded-lg shadow-xl mb-8 flex flex-wrap justify-center sticky top-2 z-10">
+            <div class="tab active" onclick="showTab('overview')">अवलोकन</div>
+            <div class="tab" onclick="showTab('meena')">मीणा</div>
+            <div class="tab" onclick="showTab('bhil')">भील</div>
+            <div class="tab" onclick="showTab('garasia')">गरासिया</div>
+            <div class="tab" onclick="showTab('sahariya')">सहरिया</div>
+            <div class="tab" onclick="showTab('admin')">अनुसूचित क्षेत्र एवं प्रशासन</div>
+            <div class="tab" onclick="showTab('programs')">विकास कार्यक्रम</div>
+        </nav>
+
+        <main id="main-content">
+            <section id="overview-section" class="content-section active animated-card">
+                <h2 class="text-3xl font-bold text-[#3d405b] text-center main-title-font mb-6">जनजातीय सांख्यिकी एवं वितरण (2011)</h2>
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                    <div class="bg-white p-4 rounded-lg shadow stat-card text-center info-card">
+                        <h3 class="text-sm font-semibold text-gray-500">कुल ST आबादी/हिस्सा</h3>
+                        <p class="text-2xl font-bold mt-1 stat-value">92.38 लाख / 13.5%</p>
+                        <p class="text-xs text-gray-500">शहरी 3.2%, ग्रामीण 16.9%</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg shadow stat-card text-center info-card">
+                        <h3 class="text-sm font-semibold text-gray-500">दशकीय वृद्धि दर</h3>
+                        <p class="text-2xl font-bold mt-1 stat-value">30.2%</p>
+                        <p class="text-xs text-gray-500">सर्वाधिक: नागौर (60.4%), न्यूनतम: गंगानगर (-8.6%)</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg shadow stat-card text-center info-card">
+                        <h3 class="text-sm font-semibold text-gray-500">लिंगानुपात (समग्र)</h3>
+                        <p class="text-2xl font-bold mt-1 stat-value">948</p>
+                        <p class="text-xs text-gray-500">सर्वाधिक: डूंगरपुर (1000), न्यूनतम: धौलपुर (843)</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg shadow stat-card text-center info-card">
+                        <h3 class="text-sm font-semibold text-gray-500">देश में स्थान (संख्या)</h3>
+                        <p class="text-2xl font-bold mt-1 stat-value">चौथा</p>
+                        <p class="text-xs text-gray-500">प्रतिशत अंश में 13वाँ स्थान</p>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
+                    <div class="lg:col-span-2 bg-white p-6 rounded-lg shadow animated-card">
+                         <h3 class="text-xl font-semibold text-center mb-4 text-[#3d405b]">जनजातीय संरचना (शीर्ष 4)</h3>
+                         <div class="chart-container h-64 md:h-80">
+                            <canvas id="tribeCompositionChart"></canvas>
+                        </div>
+                        <p class="text-sm text-center mt-2 text-gray-600">मीणा (47.03%) > भील (44.38%) > गरासिया (3.40%) > सहरिया (1.20%)</p>
+                    </div>
+                    <div class="lg:col-span-3 bg-white p-6 rounded-lg shadow animated-card">
+                         <h3 class="text-xl font-semibold text-center mb-4 text-[#3d405b]">जिला-वार ST जनसंख्या प्रतिशत</h3>
+                        <div class="text-center mb-4 space-x-2">
+                             <button id="dist-high-btn" class="sub-nav-btn active" onclick="updateDistributionChart('high')">सर्वाधिक प्रतिशत (%)</button>
+                             <button id="dist-low-btn" class="sub-nav-btn" onclick="updateDistributionChart('low')">न्यूनतम प्रतिशत (%)</button>
+                        </div>
+                         <div class="chart-container h-64 md:h-80">
+                            <canvas id="distributionChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- NEW SECTION: Detailed Percentage Breakdown -->
+                <div class="bg-white p-6 rounded-lg shadow-xl animated-card mt-8">
+                    <h3 class="text-xl font-bold text-[#e07a5f] main-title-font mb-4">कुल जनसंख्या में जनजातीय जनसंख्या का जिला-वार प्रतिशत वर्गीकरण</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-sm">
+                        <div class="border-b md:border-b-0 md:border-r border-gray-200 pb-4 md:pb-0 pr-4">
+                            <h4 class="font-bold text-[#3d405b]">51 से 80 प्रतिशत (उच्च सांद्रता)</h4>
+                            <ul class="list-disc list-inside mt-2 space-y-1 text-gray-700">
+                                <li>बाँसवाड़ा (76.4%)</li>
+                                <li>डूंगरपुर (70.8%)</li>
+                                <li>प्रतापगढ़ (63.4%)</li>
+                            </ul>
+                        </div>
+                        <div class="border-b md:border-b-0 md:border-r border-gray-200 pb-4 md:pb-0 pr-4">
+                            <h4 class="font-bold text-[#3d405b]">26 से 50 प्रतिशत (मध्यम सांद्रता)</h4>
+                            <ul class="list-disc list-inside mt-2 space-y-1 text-gray-700">
+                                <li>उदयपुर (49.7%)</li>
+                                <li>सिरोही (28.2%)</li>
+                                <li>दौसा (26.5%)</li>
+                            </ul>
+                            <h4 class="font-bold text-[#3d405b] mt-4">20 से 25 प्रतिशत (निम्न-मध्यम)</h4>
+                            <ul class="list-disc list-inside mt-2 space-y-1 text-gray-700">
+                                <li>बाराँ (22.6%)</li>
+                                <li>करौली (22.3%)</li>
+                                <li>बूँदी (20.6%)</li>
+                            </ul>
+                        </div>
+                        <div class="md:col-span-1">
+                            <h4 class="font-bold text-[#3d405b]">20 प्रतिशत से कम (सबसे कम सांद्रता)</h4>
+                            <ul class="list-disc list-inside grid grid-cols-2 mt-2 text-gray-700 text-xs">
+                                <li>राजसमन्द (13.9%)</li>
+                                <li>चित्तौड़गढ़ (13.1%)</li>
+                                <li>झालावाड़ (12.9%)</li>
+                                <li>टोंक (12.5%)</li>
+                                <li>जालौर (9.7%)</li>
+                                <li>भीलवाड़ा (9.5%)</li>
+                                <li>कोटा (9.4%)</li>
+                                <li>जयपुर (7.9%)</li>
+                                <li>अलवर (7.8%)</li>
+                                <li>पाली (7.1%)</li>
+                                <li>बाड़मेर (6.7%)</li>
+                                <li>जैसलमेर (6.3%)</li>
+                                <li>धौलपुर (4.8%)</li>
+                                <li>जोधपुर (3.2%)</li>
+                                <li>सीकर (2.8%)</li>
+                                <li>अजमेर (2.4%)</li>
+                                <li>भरतपुर (2.1%)</li>
+                                <li>झुन्झुनूँ (1.9%)</li>
+                                <li>गंगानगर (0.68%)</li>
+                                <li>चूरू (0.6%)</li>
+                                <li>बीकानेर (0.32%)</li>
+                                <li>नागौर (0.31%)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <!-- END NEW SECTION -->
+                
+            </section>
+            
+            <section id="meena-section" class="tribe-details content-section"></section>
+            <section id="bhil-section" class="tribe-details content-section"></section>
+            <section id="garasia-section" class="tribe-details content-section"></section>
+            <section id="sahariya-section" class="tribe-details content-section"></section>
+
+            <section id="admin-section" class="content-section animated-card">
+                 <h2 class="text-3xl font-bold text-[#3d405b] text-center main-title-font mb-6">अनुसूचित क्षेत्र, वैधानिक जनजातियाँ एवं आरक्षण</h2>
+                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="lg:col-span-1 bg-white p-6 rounded-lg shadow info-card animated-card">
+                        <h3 class="text-xl font-semibold text-[#e07a5f] mb-4">वैधानिक प्रावधान एवं क्षेत्र (5वीं अनुसूची)</h3>
+                        <div class="detail-box text-gray-700 text-sm">
+                            <p class="detail-item"><b>आधार:</b> भारतीय संविधान की <b>अनुसूची 5</b> (प्रशासन, नियंत्रण एवं विकास हेतु राज्य को कार्यपालिका शक्तियाँ)।</p>
+                            <p class="detail-item"><b>जनजाति विकास विभाग:</b> <b>1975</b> में इन्हीं शक्तियों के आधार पर स्थापित।</p>
+                            <p class="detail-item"><b>अनुसूचित क्षेत्र परिभाषा:</b> संविधान की <b>पाँचवी अनुसूची के भाग 'ग'</b> के अनुसार राष्ट्रपति के आदेश द्वारा घोषित क्षेत्र।</p>
+                            <p class="detail-item"><b>कुल क्षेत्र:</b> राज्य के दक्षिण भाग में स्थित <b>8 जिलों</b> की <b>45 तहसीलें</b> व <b>5696 गाँव</b>।</p>
+                            <p class="detail-item"><b>पूर्ण क्षेत्र वाले 3 जिले:</b> बाँसवाड़ा, डूंगरपुर, प्रतापगढ़।</p>
+                            <p class="detail-item"><b>आंशिक क्षेत्र वाले 5 जिले:</b> उदयपुर, सिरोही, राजसमंद, चित्तौड़गढ़, पाली।</p>
+                        </div>
+                    </div>
+
+                    <div class="lg:col-span-2 bg-white p-6 rounded-lg shadow info-card animated-card">
+                        <h3 class="text-xl font-semibold text-[#81b29a] mb-4">12 वैधानिक जनजातियाँ और आरक्षण</h3>
+                        <div class="grid grid-cols-2 md:grid-cols-3 gap-4 detail-box">
+                            <h4 class="font-bold text-[#3d405b] col-span-2 mb-2">राजस्थान अनुसूचित जाति एवं जनजाति (संशोधन) अधिनियम 1976 के अनुसार:</h4>
+                            <ul class="list-disc list-inside space-y-1 text-sm text-gray-700 font-normal col-span-2">
+                                <li>भील (1)</li><li>भील मीना (भील मीणा) (2)</li><li>डामोर (3)</li><li>धनका/तडवी/वलवी/तेतरिया (4)</li><li>गरासिया (<b>राजपूत गरासिया को छोड़कर</b>) (5)</li><li>कथौड़ी (6)</li>
+                                <li>कोकना/कोकनी (7)</li><li>कोली ढोर/टोकरे कोली/कोलचा (8)</li><li>मीना (मीणा) (9)</li><li>नायका/नायकड़ा (10)</li><li>पटेलिया (11)</li><li>सहरिया (12)</li>
+                            </ul>
+                            <div class="text-center md:border-l pl-2 border-gray-300 col-span-3 md:col-span-1">
+                                <p class="text-xl font-bold text-[#e07a5f]">आरक्षण</p>
+                                <p class="text-lg mt-1"><b>लोकसभा:</b> 3 सीटें</p>
+                                <p class="text-lg"><b>विधानसभा:</b> 25 सीटें</p>
+                            </div>
+                        </div>
+                    </div>
+                 </div>
+                 
+                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+                    <div class="bg-white p-6 rounded-lg shadow info-card animated-card">
+                        <h3 class="text-xl font-semibold text-[#81b29a] mb-4">जनजातियों का अवरोही क्रम (संख्या के अनुसार)</h3>
+                        <ul class="list-none space-y-2 detail-box text-sm font-semibold">
+                            <li>1. मीणा (<b>43,45,528</b>)</li>
+                            <li>2. भील (<b>41,00,264</b>)</li>
+                            <li>3. गरासिया (<b>3,14,194</b>)</li>
+                            <li>4. सहरिया (<b>1,11,377</b>)</li>
+                            <li class="mt-4 text-[#e07a5f]">सर्वाधिक संख्या: <b>उदयपुर संभाग</b></li>
+                            <li class="text-[#e07a5f]">सबसे कम संख्या: <b>बीकानेर संभाग</b></li>
+                        </ul>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow info-card animated-card">
+                        <h3 class="text-xl font-semibold text-[#81b29a] mb-4">जनजातियों का अवरोही क्रम (प्रतिशत के अनुसार)</h3>
+                        <ul class="list-none space-y-2 detail-box text-sm font-semibold">
+                            <li>1. मीणा (<b>47.03%</b>)</li>
+                            <li>2. भील (<b>44.38%</b>)</li>
+                            <li>3. गरासिया (<b>3.40%</b>)</li>
+                            <li>4. सहरिया (<b>1.20%</b>)</li>
+                            <li class="mt-4 text-gray-600">कुल ST जनसंख्या का <b>90% से अधिक</b> हिस्सा शीर्ष दो जनजातियों का है।</li>
+                        </ul>
+                    </div>
+                 </div>
+
+                 <div class="bg-white p-6 rounded-lg shadow info-card animated-card mt-8">
+                    <h3 class="text-xl font-semibold text-[#e07a5f] main-title-font mb-4">जनजातियों का भौगोलिक वितरण/ निवास क्षेत्र</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 detail-box">
+                        <div class="font-bold text-[#3d405b] border-b border-gray-300 pb-2 col-span-full">मुख्य जनजातियाँ</div>
+                        <p class="text-sm"><b>मीणा:</b> जयपुर (सर्वाधिक), दौसा, सवाईधामोपुर, करौली, अलवर, उदयपुर, कोटा, बूँदी</p>
+                        <p class="text-sm"><b>भील:</b> बाँसवाड़ा, डूंगरपुर, प्रतापगढ़, सिरोही, उदयपुर, राजसमंद, बाड़मेर,</p>
+                        <p class="text-sm"><b>गरासिया:</b> सिरोही (आबूरोड़ व पिंडवाड़ा तहसीलें), उदयपुर, पाली, डूंगरपुर, बाँसवाड़ा</p>
+                        <p class="text-sm"><b>सहरिया:</b> बाराँ (शाहबाद व किशनगंज तहसीलें), कोटा, झालावाड़</p>
+                        <div class="font-bold text-[#3d405b] border-b border-gray-300 pb-2 pt-4 col-span-full">अन्य वैधानिक जनजातियाँ</div>
+                        <p class="text-sm"><b>डामोर:</b> डूंगरपुर (सिमलवाड़ा क्षेत्र), बाँसवाड़ा, उदयपुर, राजसमंद</p>
+                        <p class="text-sm"><b>कथौड़ी:</b> उदयपुर, डूंगरपुर</p>
+                        <p class="text-sm"><b>धानका:</b> जयपुर</p>
+                        <p class="text-sm"><b>नायका:</b> बीकानेर</p>
+                        <p class="text-sm"><b>कोलिकोर:</b> जयपुर</p>
+                        <p class="text-sm"><b>पटेलिया:</b> कोटा</p>
+                        <p class="text-sm"><b>भील मीना:</b> डूंगरपुर</p>
+                        <p class="text-sm"><b>कोकना:</b> जोधपुर</p>
+                    </div>
+                 </div>
+            </section>
+
+            <section id="programs-section" class="content-section animated-card">
+                <h2 class="text-3xl font-bold text-[#3d405b] text-center main-title-font mb-6">जनजातीय विकास कार्यक्रम एवं समस्याएँ</h2>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div>
+                        <h3 class="text-xl font-bold text-[#e07a5f] mb-4">विकास कार्यक्रम (मुख्य योजनाएँ)</h3>
+                        <div id="programs-accordion" class="space-y-2"></div>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow info-card animated-card">
+                         <h3 class="text-xl font-bold text-[#e07a5f] mb-4">प्रमुख समस्याएँ और कारण</h3>
+                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+                            <div>
+                                <h4 class="font-bold text-[#3d405b] mb-1">समस्याएँ</h4>
+                                <ul class="list-disc list-inside text-gray-700">
+                                    <li>ऋण ग्रस्तता व भूमि हस्तांतरण</li>
+                                    <li>गरीबी व अशिक्षा, नशाखोरी</li>
+                                    <li>निर्जनीकरण/जनह्रास</li>
+                                    <li>औद्योगिकीकरण का प्रभाव</li>
+                                </ul>
+                            </div>
+                             <div>
+                                <h4 class="font-bold text-[#3d405b] mb-1">मूल कारण</h4>
+                                <ul class="list-disc list-inside text-gray-700">
+                                    <li>वनों पर अधिकारों का हनन</li>
+                                    <li>परम्परागत कृषि से कम उत्पादन</li>
+                                    <li>पर्व/त्योहारों में क्षमता से अधिक व्यय</li>
+                                    <li>संकुचित विचारधारा का अभाव</li>
+                                </ul>
+                            </div>
+                         </div>
+                         <p class="text-sm font-bold mt-4 text-[#81b29a] text-center"><b>जनजाति कल्याण प्रकोष्ठ (Tribal Welfare Cell):</b> गठन 2011, मुख्यालय राजभवन, जयपुर।</p>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+<script>
+const tribesData = {
+    overview: {
+        composition: { labels: ['मीणा (47.03%)', 'भील (44.38%)', 'गरासिया (3.40%)', 'सहरिया (1.20%)', 'अन्य (3.99%)'], values: [47.03, 44.38, 3.40, 1.20, 3.99] },
+        distribution: {
+            high: { labels: ['बांसवाड़ा', 'डूंगरपुर', 'प्रतापगढ़', 'उदयपुर', 'सिरोही'], values: [76.4, 70.8, 63.4, 49.7, 28.2] },
+            low: { labels: ['नागौर', 'बीकानेर', 'चुरू', 'गंगानगर', 'झुन्झुनूं'], values: [0.31, 0.32, 0.6, 0.68, 1.9] }
+        }
+    },
+    meena: {
+        name: "मीणा",
+        stats: [
+            { label: "कुल ST में प्रतिशत", value: "47.03%" },
+            { label: "सर्वाधिक जनसंख्या", value: "सबसे बड़ी जनजाति" },
+            { label: "मूल निवास", value: "काली खोह पर्वतमाला" }
+        ],
+        keyPoints: [
+            "राजस्थान की <b>सबसे बड़ी व सर्वाधिक साक्षर</b> जनजाति है।",
+            "<b>उत्पत्ति</b> भगवान विष्णु के <b>मत्स्यावतार</b> से, जिसका उल्लेख <b>मत्स्य पुराण</b> में है।",
+            "प्रमुख वर्ग: <b>जमींदार मीणा</b> (कृषि/पशुपालन) और <b>चौकीदार मीणा</b> (राजकीय खजाने की सुरक्षा)।",
+            "अन्य वर्ग: <b>चर्मकार मीणा, पडिहार मीणा, रावत मीणा, सुरतेवाला मीणा</b>।",
+        ],
+        content: {
+            social: {
+                title: "सामाजिक जीवन एवं संगठन",
+                details: `
+                    <p class="detail-item"><b>पंचायत:</b> 4 प्रकार की (ग्राम, गौत्र, क्षेत्रीय, <b>चौरासी पंचायत</b>)। <b>चौरासी पंचायत सबसे बड़ी</b> है।</p>
+                    <p class="detail-item"><b>मुखिया:</b> गाँव/पंचायत का मुखिया <b>पटेल</b> कहलाता है।</p>
+                    <p class="detail-item"><b>विवाह प्रथाएँ:</b> <b>मोरनी-मोड़ना</b> विवाह संबंधित प्रथा। प्राचीन समय में ब्रह्म और गंधर्व विवाह का प्रचलन था।</p>
+                    <p class="detail-item"><b>आराध्य/देवता:</b> <b>भूरिया बाबा/गोतमेश्वर</b> (कुलदेवता), <b>जीणमाता</b> (कुलदेवी)।</p>
+                    <p class="detail-item"><b>निवास क्षेत्र:</b> जयपुर, दौसा, सवाई माधोपुर, करौली, अलवर, टोंक आदि में निवास करती है।</p>
+                `
+            },
+            economy: {
+                title: "अर्थव्यवस्था",
+                details: `<p class="text-gray-700">यह जनजाति <b>कृषि</b> और <b>पशुपालन</b> के साथ <b>बटाईदारी कृषि</b> व्यवस्था का प्रचलन करती है। यह आर्थिक रूप से अन्य जनजातियों की तुलना में <b>संपन्न</b> है तथा <b>सरकारी सेवा में सर्वाधिक</b> लोग इसी जनजाति से हैं।</p>`
+            },
+            culture: {
+                title: "संस्कृति, वस्त्र एवं नृत्य",
+                details: `
+                    <p class="detail-item"><b>नृत्य:</b> <b>नेजा नृत्य</b> (होली के तीसरे दिन, खैरवाड़ा व डूंगरपुर में)।</p>
+                    <p class="detail-item"><b>परिधान:</b> पुरुष <b>धोती-कमीज</b> तथा सिर पर <b>साफा</b>। महिला <b>घाघरा, कांचली</b> व <b>ओढ़नी</b>।</p>
+                    <p class="detail-item"><b>मेले:</b> चौथ का बरवाड़ा, गणेशजी (सवाई माधोपुर), महावीरजी (करौली)।</p>
+                `
+            }
+        }
+    },
+    bhil: {
+        name: "भील",
+         stats: [
+            { label: "कुल ST में प्रतिशत", value: "44.38%" },
+            { label: "कर्नल टॉड", value: "वनपुत्र" },
+            { label: "रणघोष", value: "फाइरे-फाइरे" }
+        ],
+        keyPoints: [
+            "राजस्थान की <b>दूसरी सबसे बड़ी</b> और <b>सबसे प्राचीनतम</b> जनजाति।",
+            "<b>उत्पत्ति</b> द्राविड़ियन भाषा के '<b>बीलू</b>' (तीरंदाज) से हुई है।",
+            "<b>वर्गीकरण:</b> ऊँचे पहाड़ों पर रहने वाले <b>पालवी</b> और मैदानी इलाकों के <b>वागड़ी</b>।",
+            "भील-मीणा जनजाति <b>सर्वाधिक बाँसवाड़ा व डूंगरपुर</b> में पायी जाती है।",
+        ],
+        content: {
+            social: {
+                title: "सामाजिक जीवन, संगठन एवं प्रथाएँ",
+                details: `
+                    <p class="detail-item"><b>आवास:</b> घर को <b>टापरा</b> या <b>कू</b> कहते हैं। घर के बाहर का बरामदा <b>डहलिया (ढालिया)</b> कहलाता है।</p>
+                    <p class="detail-item"><b>संगठन:</b> छोटा गाँव <b>फला</b>, बड़ा गाँव <b>पाल</b>। मुखिया <b>गमेती/पालवी/पालजी</b>। एक ही वंश के मुखिया को <b>तदवी/वंसाओ</b>।</p>
+                    <p class="detail-item"><b>गोत्र:</b> पितृवंशीय गोत्र <b>अटक</b> कहलाता है (जैसे: कटारा, ताबियाड़)।</p>
+                    <p class="detail-item"><b>विवाह/तलाक:</b> विवाह में कन्या मूल्य (<b>दापा</b>)। तलाक की प्रथा <b>छेड़ा-फाड़ना</b>। <b>हाथी वेंडो</b> (पवित्र वृक्ष के समक्ष फेरे)।</p>
+                    <p class="detail-item"><b>अन्य प्रथाएँ:</b> <b>गोलड़</b> (नातरा लाई स्त्री के बच्चे), <b>मायस</b> (नातरा करने पर चुकाई राशि/पशु), <b>गोल गधेड़ो प्रथा</b>।</p>
+                    <p class="detail-item"><b>लोकगीत:</b> <b>सुवंटिया</b> (केवल स्त्रियों द्वारा), <b>हमसीढ़ो</b> (पुरुष-स्त्री द्वारा)।</p>
+                `
+            },
+            economy: {
+                title: "आर्थिक जीवन एवं कृषि",
+                details: `
+                    <p class="detail-item"><b>स्थानांतरित कृषि:</b> <b>वालरा</b>। पहाड़ी ढलानों पर <b>चिमाता</b>। मैदानी भागों में <b>दजिया</b>।</p>
+                    <p class="detail-item"><b>शिकार:</b> बाण <b>हरियो व रोबदो</b>। पक्षियों को पकड़ने का फँदा <b>फटकिया</b>।</p>
+                    <p class="detail-item"><b>महत्वपूर्ण वृक्ष:</b> <b>महुआ</b> (शराब सेवन हेतु विशेष महत्त्व)।</p>
+                `
+            },
+            culture: {
+                title: "वस्त्र, नृत्य एवं धर्म",
+                details: `
+                    <p class="detail-item"><b>पुरुष वस्त्र:</b> <b>ठेपाड़ा/ढ़ेपाड़ा</b> (तंग धोती), <b>पोत्या</b> (सफेद साफा), <b>जाड़या</b> (साफे पर रंगीन पट्टी)।</p>
+                    <p class="detail-item"><b>महिला वस्त्र:</b> <b>कछाव (कछाबू)</b> (लाल-काले घाघरा), <b>सिंदूरी</b> (लाल साड़ी), <b>पिरिया</b> (पीला वस्त्र)।</p>
+                    <p class="detail-item"><b>नृत्य:</b> <b>गवरी/राई</b> (मेवाड़, 40 दिन तक), गैर, नेजा, हाथीमना, युद्ध।</p>
+                    <p class="detail-item"><b>मेले:</b> <b>बेणेश्वर मेला</b> (कुंभ), <b>ऋषभदेव मेला (केसरियाजी)</b>। ये केसर का पानी पीकर <b>झूठ नहीं बोलते</b>।</p>
+                    <p class="detail-item"><b>पंथ/चित्र:</b> <b>उंदरिया पंथ</b> (जयसमंद झील)। <b>भराड़ी</b> (वैवाहिक अवसरों पर लोकदेवी के भित्ति चित्र)।</p>
+                `
+            }
+        }
+    },
+    garasia: {
+        name: "गरासिया",
+         stats: [
+            { label: "कुल ST में प्रतिशत", value: "3.40%" },
+            { label: "तीसरी सबसे बड़ी जनजाति", value: "उत्पत्ति चौहान राजपूतों से" },
+            { label: "पवित्र स्थल", value: "नक्की झील (अस्थि विसर्जन)" }
+        ],
+        keyPoints: [
+            "<b>तीसरी सबसे बड़ी</b> जनजाति।",
+            "<b>मूल प्रदेश:</b> <b>आबू रोड़ का भाखर क्षेत्र</b>।",
+            "<b>आवास:</b> घर को '<b>घेर</b>', गाँव को '<b>फालिया</b>' कहते हैं।",
+            "सामाजिक वर्ग: <b>मोटी नियात, नेनकी नियात, निचली नियात</b>।",
+        ],
+        content: {
+            social: {
+                title: "सामाजिक जीवन एवं संगठन",
+                details: `
+                     <p class="detail-item"><b>मुखिया:</b> पंचायत का मुखिया <b>सहलोत</b>। सबसे बड़ा परम्परागत मुखिया <b>पटेल</b>।</p>
+                     <p class="detail-item"><b>विवाह:</b> <b>मोर बंधिया, ताणना (तारणा), पहरावना</b> विवाह प्रचलित हैं।</p>
+                     <p class="detail-item"><b>संस्था/स्मारक:</b> <b>हेलरू</b> (सहकारी संस्था)। <b>हुरे</b> (मृतक की याद में मिट्टी का स्मारक)।</p>
+                     <p class="detail-item"><b>अन्य:</b> महिलाएँ ललाट व ठोडी पर <b>गोदना</b> गुदवाती हैं। मृत्यु भोज <b>कांधिया प्रथा</b>।</p>
+                `
+            },
+            economy: {
+                title: "अर्थव्यवस्था",
+                details: `<p class="detail-item"><b>कृषि:</b> <b>हरी भावरी</b> (सामूहिक कृषि)।</p><p class="detail-item"><b>संग्रहण:</b> <b>सोहरी</b> (अनाज संग्रह की कोठियाँ)।</p><p class="detail-item">अर्थव्यवस्था कृषि, पशुपालन, शिकार और वनोत्पादों के एकत्रीकरण पर आधारित है।</p>`
+            },
+            culture: {
+                title: "नृत्य एवं मेले",
+                details: `
+                     <p class="detail-item"><b>नृत्य:</b> <b>वालर</b> (प्रमुख), गरbaा, गैर, मोरिया, गौर, <b>लूर, कूद, जवारा</b>।</p>
+                     <p class="detail-item"><b>मेले:</b> <b>मनखारो मेला</b> (चौपानी, गुजरात), <b>चेतर विचितर मेला</b> (कोटड़ा)। युवक मेलों में जीवन साथी का चयन करते हैं।</p>
+                     <p class="detail-item"><b>आदर्श पक्षी:</b> <b>मोर</b>।</p>
+                `
+            }
+        }
+    },
+    sahariya: {
+        name: "सहरिया",
+        stats: [
+            { label: "विशेष दर्जा", value: "आदिम जनजाति समूह" },
+            { label: "सर्वाधिक निवास", value: "बाराँ (शाहबाद/किशनगंज)" },
+            { label: "जंगल का अर्थ", value: "सहर (फारसी भाषा)" }
+        ],
+        keyPoints: [
+            "राजस्थान की <b>एकमात्र पिछड़ी जनजाति</b> जिसे भारत सरकार ने <b>आदिम जनजाति (Primitive Tribal Group)</b> में शामिल किया है।",
+            "नाम फारसी भाषा के '<b>सहर</b>' (जंगल) से बना है।",
+            "<b>मुखिया:</b> पंचायत का मुखिया <b>कोतवाल</b>। <b>चौरासिया</b> सबसे बड़ी पंचायत।",
+            "<b>आवास:</b> <b>टापरी</b> व <b>टोपा</b>। <b>गोपना/कोरुआ</b> पेड़ों पर बने मचान।",
+        ],
+        content: {
+            social: {
+                title: "सामाजिक जीवन एवं संगठन",
+                details: `
+                    <p class="detail-item"><b>संगठन:</b> बस्ती <b>सहराना</b>, गाँव <b>सहरौल</b> कहलाता है।</p>
+                    <p class="detail-item"><b>देवता:</b> <b>वाल्मिकी ऋषि</b> (कुल देवता), <b>मेरू भवानी</b>।</p>
+                    <p class="detail-item"><b>विवाह:</b> <b>लाली मोरिया संस्कार</b> विवाह प्रथा से जुड़ा है।</p>
+                    <p class="detail-item"><b>अन्य:</b> लड़की के जन्म को <b>शुभ</b> मानते हैं। <b>सबसे कम साक्षरता दर</b>।</p>
+                `
+            },
+            economy: {
+                title: "अर्थव्यवस्था",
+                details: `<p class="text-gray-700">जीवनयापन <b>स्थानांतरित कृषि, पशुपालन, वनोत्पाद एकत्रित करके</b> और <b>मजदूरी</b> से होता है।</p>`
+            },
+            culture: {
+                title: "नृत्य एवं मेले",
+                details: `
+                     <p class="detail-item"><b>मेले:</b> <b>सीताबाड़ी मेला</b> (बाराँ, 'सहरियाओं का कुंभ'), <b>कपिलधारा का मेला</b>।</p>
+                     <p class="detail-item"><b>नृत्य:</b> <b>शिकारी, झेला, बिछवा, लहंगी, इन्द्रपुरी, सांग, फाग</b>।</p>
+                     <p class="detail-item"><b>परिधान:</b> पुरुष धोती, कमीज व साफा (<b>खपटा</b>)।</p>
+                `
+            }
+        }
+    },
+    programs: [
+        { name: 'जनजाति उपयोजना क्षेत्र (TSP) - 1974-75', detail: 'शुरुआत 5वीं पंचवर्षीय योजना में। <b>8 जिलों</b> (बाँसवाड़ा, डूंगरपुर, प्रतापगढ़ का सम्पूर्ण क्षेत्र) में जनजातियों की आर्थिक स्थिति सुधारना। संचालन: <b>केंद्र सरकार</b>।' },
+        { name: 'परिवर्तित क्षेत्र विकास कार्यक्रम (MADA) - 1978-79', detail: '18 जिलों के <b>44 लघु खण्डों</b> के <b>3586 गाँवों</b> को शामिल किया गया। शर्त: जनसंख्या 10,000+ और ST आबादी 50%+। संचालन: <b>केंद्र सरकार</b>।' },
+        { name: 'माडा समुदाय (MADA Cluster) - 11 Cluster', detail: '8 जिलों (कोटा, बूँदी, बाराँ, झालावाड़, अजमेर, राजसमंद, भरतपुर, सवाई माधोपुर) में 11 कलस्टर। शर्त: जनसंख्या 5000+ और ST आबादी 50%+।' },
+        { name: 'बिखरी जनजाति विकास कार्यक्रम (TADP) - 1979', detail: 'TSP, MADA, SDP क्षेत्रों के अतिरिक्त <b>30 जिलों</b> में बिखरे <b>29.28 लाख</b> जनजाति के लोगों के विकास हेतु। संचालन: <b>केंद्र सरकार</b>।' },
+        { name: 'प्रधानमंत्री जनजातीय उन्नत ग्राम अभियान - 2024', detail: 'पीएम-जनमन की सफलता पर आधारित। राजस्थान के <b>40 जिलों के 208 ब्लॉकों</b> के 6019 गाँवों के आदिवासी लाभान्वित होंगे.' },
+        { name: 'अन्य राज्य कार्यक्रम', detail: '<b>माँ बाड़ी योजना</b> (5 जिलों में 6-12 वर्ष के बच्चों हेतु), <b>रूख भायला कार्यक्रम (1986)</b> (सामाजिक वानिकी), <b>अनुप्रति योजना</b> (प्रोत्साहन राशि), <b>बालक-बालिका जनजाति हॉकी एकेडमी</b> (उदयपुर, 2021)।' }
+    ]
+};
+
+const chartColors = {
+    main: ['#81b29a', '#f2cc8f', '#e07a5f', '#3d405b', '#8d99ae'],
+    distHigh: ['#e07a5f', '#81b29a', '#f2cc8f', '#3d405b', '#8d99ae'], 
+    distLow: ['#f4f1de', '#e9ecef', '#cbe8cf', '#a6cda5', '#81b29a']
+};
+
+const chartInstances = {};
+const tooltipTitleCallback = { plugins: { tooltip: { callbacks: { title: function(tooltipItems) { const item = tooltipItems[0]; let label = item.chart.data.labels[item.dataIndex]; return Array.isArray(label) ? label.join(' ') : label; } } } } };
+const processLabels = (labels) => labels.map(label => { if (label.length <= 16) return label; const words = label.split(' '); let lines = []; let currentLine = ''; words.forEach(word => { if ((currentLine + ' ' + word).trim().length > 16) { lines.push(currentLine); currentLine = word; } else { currentLine = (currentLine + ' ' + word).trim(); } }); lines.push(currentLine); return lines; });
+
+function createOrUpdateChart(canvasId, type, chartData, options = {}) {
+    if (chartInstances[canvasId]) {
+        chartInstances[canvasId].destroy();
+    }
+    const ctx = document.getElementById(canvasId).getContext('2d');
+    chartInstances[canvasId] = new Chart(ctx, {
+        type: type,
+        data: chartData,
+        options: { responsive: true, maintainAspectRatio: false, ...tooltipTitleCallback, ...options }
+    });
+}
+
+function showTab(tabId) {
+    document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+    document.getElementById(`${tabId}-section`).classList.add('active');
+    document.querySelectorAll('#main-nav .tab').forEach(t => t.classList.remove('active'));
+    document.querySelector(`#main-nav .tab[onclick="showTab('${tabId}')"]`).classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function updateDistributionChart(mode) {
+    document.querySelectorAll('#overview-section .sub-nav-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById(`dist-${mode}-btn`).classList.add('active');
+    const chartData = {
+        labels: processLabels(tribesData.overview.distribution[mode].labels),
+        datasets: [{
+            label: 'ST जनसंख्या (%)',
+            data: tribesData.overview.distribution[mode].values,
+            backgroundColor: mode === 'high' ? chartColors.distHigh : chartColors.distLow,
+        }]
+    };
+    createOrUpdateChart('distributionChart', 'bar', chartData, { indexAxis: 'y', plugins: { legend: { display: false } } });
+}
+
+function buildTribeDetailsPage(tribeKey) {
+    const tribe = tribesData[tribeKey];
+    const container = document.getElementById(`${tribeKey}-section`);
+    if (!tribe || container.innerHTML !== '') return;
+
+    const statsHTML = `
+        <div class="grid grid-cols-3 gap-4 mb-8">
+            ${tribe.stats.map(stat => `
+                <div class="bg-white p-4 rounded-lg shadow stat-card text-center info-card animated-card">
+                    <h3 class="text-md font-semibold text-gray-500">${stat.label}</h3>
+                    <p class="text-xl md:text-2xl font-bold mt-1 stat-value">${stat.value}</p>
+                </div>
+            `).join('')}
+        </div>
+    `;
+
+    let contentHTML = `
+        <h2 class="text-3xl font-bold text-[#3d405b] text-center main-title-font mb-4">${tribe.name} जनजाति</h2>
+        ${statsHTML}
+        <div class="info-card p-4 rounded-md shadow-sm mb-8 animated-card">
+            <h3 class="font-bold text-lg text-[#e07a5f] mb-2">मुख्य तथ्य</h3>
+            <ul class="list-disc list-inside space-y-1 text-[#3d405b] text-sm">
+                ${tribe.keyPoints.map(p => `<li>${p}</li>`).join('')}
+            </ul>
+        </div>
+        <div id="${tribeKey}-sub-nav" class="text-center mb-6 space-x-2 flex flex-wrap justify-center gap-2 animated-card">
+            ${Object.keys(tribe.content).map(key => `<button class="sub-nav-btn" data-tribe="${tribeKey}" data-content="${key}">${tribe.content[key].title}</button>`).join('')}
+        </div>
+        <div id="${tribeKey}-content-display" class="bg-white p-6 rounded-lg shadow-inner min-h-[350px] animated-card"></div>
+    `;
+    container.innerHTML = contentHTML;
+
+    document.querySelectorAll(`#${tribeKey}-sub-nav .sub-nav-btn`).forEach(btn => {
+        btn.addEventListener('click', () => {
+            const currentTribe = btn.dataset.tribe;
+            const contentKey = btn.dataset.content;
+            document.querySelectorAll(`#${currentTribe}-sub-nav .sub-nav-btn`).forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById(`${currentTribe}-content-display`).innerHTML = tribesData[currentTribe].content[contentKey].details;
+        });
+    });
+
+    document.querySelector(`#${tribeKey}-sub-nav .sub-nav-btn`).click();
+}
+
+function buildProgramsAccordion() {
+    const container = document.getElementById('programs-accordion');
+    if (container.innerHTML !== '') return;
+    let html = '';
+    tribesData.programs.forEach((program, index) => {
+        html += `
+            <div class="bg-white rounded-lg shadow-sm info-card animated-card">
+                <button onclick="toggleAccordion(${index})" class="accordion-button w-full text-left p-4 font-bold text-lg flex justify-between items-center hover:bg-gray-50">
+                    <span>${program.name}</span>
+                    <span class="transform transition-transform duration-300 text-2xl" id="arrow-${index}">&#9662;</span>
+                </button>
+                <div id="content-${index}" class="accordion-content px-4">
+                    <p class="py-4 border-t border-gray-200 text-gray-700 text-sm">${program.detail}</p>
+                </div>
+            </div>
+        `;
+    });
+    container.innerHTML = html;
+}
+
+function toggleAccordion(index) {
+    const content = document.getElementById(`content-${index}`);
+    const arrow = document.getElementById(`arrow-${index}`);
+    const programElement = document.getElementById(`programs-accordion`).children[index];
+
+    if (content.style.maxHeight) {
+        content.style.maxHeight = null;
+        arrow.style.transform = 'rotate(0deg)';
+        programElement.classList.remove('shadow-lg');
+    } else {
+        document.querySelectorAll('.accordion-content').forEach((c, i) => {
+            if (i !== index && c.style.maxHeight) {
+                c.style.maxHeight = null;
+                document.getElementById(`arrow-${i}`).style.transform = 'rotate(0deg)';
+                document.getElementById(`programs-accordion`).children[i].classList.remove('shadow-lg');
+            }
+        });
+        
+        content.style.maxHeight = content.scrollHeight + "px";
+        arrow.style.transform = 'rotate(180deg)';
+        programElement.classList.add('shadow-lg');
+    }
+}
+
+
+document.addEventListener('DOMContentLoaded', () => {
+    createOrUpdateChart('tribeCompositionChart', 'doughnut', {
+        labels: tribesData.overview.composition.labels,
+        datasets: [{ data: tribesData.overview.composition.values, backgroundColor: chartColors.main }]
+    }, { plugins: { legend: { position: 'right' } }});
+    updateDistributionChart('high');
+    
+    ['meena', 'bhil', 'garasia', 'sahariya'].forEach(buildTribeDetailsPage);
+    buildProgramsAccordion();
+});
+
+</script>
+</body>
+</html>

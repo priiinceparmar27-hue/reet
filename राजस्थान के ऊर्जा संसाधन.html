@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>राजस्थान के ऊर्जा संसाधन: एक विस्तृत डैशबोर्ड</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Noto Sans Devanagari (Main), Baloo 2 (Headings/Display) -->
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&family=Noto+Sans+Devanagari:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- AOS (Animate On Scroll) CDN -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
+
+    <!-- Custom Tailwind Configuration and Styles -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    // New Earthy/Brown Palette from user image
+                    colors: {
+                        'primary': '#524133', // Dark Contrast Brown (CTAs, Borders)
+                        'bg-light': '#FBF8F0', // Soft Cream/Off-White (Main Background)
+                        'pastel-lilac': '#B8A28E', // Taupe/Light Brown Accent
+                        'pastel-mint': '#96806C',  // Medium Brown Accent
+                        'pastel-peach': '#76614F', // Khaki Brown Accent
+                        'pastel-sky': '#D4C3A9',   // Light Beige (Hero BG - custom light shade for contrast)
+                        'text-dark': '#36422E', // Deep Espresso/Olive (Text/Footer)
+                    },
+                    fontFamily: {
+                        sans: ['Noto Sans Devanagari', 'sans-serif'],
+                        display: ['Baloo 2', 'cursive'],
+                    },
+                    boxShadow: {
+                        'glass': '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.06)',
+                        'xl-light': '0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.03)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Apply fonts globally */
+        body {
+            font-family: 'Noto Sans Devanagari', sans-serif;
+            background-color: #FBF8F0; /* Updated */
+            color: #36422E; /* Updated */
+            scroll-behavior: smooth;
+        }
+        h1, h2, h3 {
+            font-family: 'Baloo 2', cursive;
+        }
+        /* Glassmorphism effect for cards */
+        .glass-card {
+            background-color: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .glass-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 15px 25px -5px rgba(0, 0, 0, 0.15);
+        }
+        /* Custom Scrollbar for better aesthetics */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-thumb { background: #B8A28E; border-radius: 4px; border: 2px solid #FBF8F0; } /* Updated */
+        ::-webkit-scrollbar-thumb:hover { background: #96806C; } /* Updated */
+        /* Focus state for accessibility */
+        :focus {
+            outline: 2px solid #524133; /* Updated */
+            outline-offset: 2px;
+            border-radius: 4px;
+        }
+
+        /* Scroll Progress Bar (Top) */
+        #progressBar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 4px;
+            background-color: #524133; /* Updated */
+            z-index: 1000;
+        }
+        /* Accordion Transition Style */
+        .accordion-content {
+            transition: max-height 0.5s ease-in-out;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Scroll Progress Bar -->
+    <div id="progressBar"></div>
+
+    <!-- 1. Header & Navigation -->
+    <header id="header" class="sticky top-0 z-50 bg-white/90 backdrop-blur-md shadow-glass">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo/Branding -->
+                <div class="flex items-center space-x-2">
+                    <span class="text-xl font-display text-primary tracking-tight">ऊर्जा</span>
+                    <h1 class="text-xl sm:text-2xl font-display text-text-dark">राजस्थान ऊर्जा डैशबोर्ड</h1>
+                </div>
+
+                <!-- Navigation Links - UPDATED -->
+                <nav class="hidden md:flex space-x-6 text-sm font-medium">
+                    <a href="#hero" class="text-text-dark hover:text-primary transition duration-150 p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-primary">होम</a>
+                    <a href="#resources" class="text-text-dark hover:text-primary transition duration-150 p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-primary">संसाधन</a>
+                    <a href="#detailed-data" class="text-text-dark hover:text-primary transition duration-150 p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-primary">विस्तृत डाटा</a>
+                    <a href="#stats" class="text-text-dark hover:text-primary transition duration-150 p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-primary">आँकड़े</a>
+                    <a href="#" class="text-text-dark hover:text-primary transition duration-150 p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-primary" aria-label="बाहरी संसाधन लिंक">स्रोत</a>
+                </nav>
+
+                <!-- Mobile Menu Button (Placeholder) -->
+                <button class="md:hidden text-text-dark focus:outline-none focus:ring-2 focus:ring-primary rounded-md p-2" aria-label="Open menu">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10" id="main-content">
+        
+        <!-- 2. Hero Section / Summary -->
+        <section id="hero" class="py-8 lg:py-12" data-aos="fade-up">
+            <div class="bg-pastel-sky p-6 sm:p-10 rounded-xl shadow-xl-light border-l-8 border-primary/50">
+                <h2 class="text-3xl sm:text-4xl font-display font-bold text-text-dark mb-4">राजस्थान के ऊर्जा संसाधन</h2>
+                <p class="text-lg text-gray-600 leading-relaxed mb-6">
+                    संसाधन वे सभी प्राकृतिक एवं मानव निर्मित वस्तुएँ हैं जो मनुष्य के लिए उपयोगी होती हैं। ऊर्जा संसाधन वे हैं जिनका उपयोग ऊर्जा उत्पन्न करने के लिए किया जाता है। राजस्थान ऊर्जा उत्पादन और नवीकरणीय ऊर्जा क्षमता में देश का एक प्रमुख राज्य है।
+                </p>
+
+                <!-- Key Stats / Pill Layout (Total Capacity, Renewable Share) -->
+                <div class="flex flex-wrap gap-4 mt-6">
+                    <div class="bg-white px-4 py-2 rounded-full shadow-glass text-center" data-aos="zoom-in" data-aos-delay="100">
+                        <p class="text-xs font-semibold uppercase text-primary">कुल अधिष्ठापित क्षमता (दिसंबर 2024)</p>
+                        <p class="text-xl font-display font-bold text-text-dark">26,325.19 MW</p>
+                    </div>
+                    <div class="bg-white px-4 py-2 rounded-full shadow-glass text-center" data-aos="zoom-in" data-aos-delay="200">
+                        <p class="text-xs font-semibold uppercase text-primary">नवीकरणीय ऊर्जा का योगदान</p>
+                        <p class="text-xl font-display font-bold text-text-dark">62.41%</p>
+                    </div>
+                    <div class="bg-white px-4 py-2 rounded-full shadow-glass text-center" data-aos="zoom-in" data-aos-delay="300">
+                        <p class="text-xs font-semibold uppercase text-primary">सौर ऊर्जा क्षमता (संभावित)</p>
+                        <p class="text-xl font-display font-bold text-text-dark">142 GW</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. Main Layout: 2 Columns (Content Grid + Sidebar/Chart) -->
+        <div class="lg:grid lg:grid-cols-3 lg:gap-10 mt-12">
+            
+            <!-- Left Column: Resource Cards (Grid) + Detailed Data (New) -->
+            <div class="lg:col-span-2">
+                <!-- 3a. Resource Cards (Grid) -->
+                <section id="resources" class="mb-10">
+                    <h3 class="text-3xl font-display font-bold text-text-dark mb-6 border-b pb-2">प्रमुख ऊर्जा संसाधन</h3>
+
+                    <!-- Search Bar (Filter for cards) -->
+                    <div class="mb-6" data-aos="fade-right">
+                        <input type="text" id="resource-search" placeholder="संसाधन का नाम खोजें (उदा: सौर, पवन)" class="w-full p-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-primary focus:border-primary shadow-glass" aria-label="संसाधन खोजें">
+                    </div>
+
+                    <!-- Resource Cards Grid -->
+                    <div id="resource-grid" class="grid sm:grid-cols-2 gap-6">
+                        
+                        <!-- Card 1: ताप ऊर्जा (Thermal) -->
+                        <div class="glass-card p-6 rounded-xl shadow-glass bg-pastel-lilac/30" data-aos="fade-up">
+                            <h4 class="text-2xl font-display font-bold text-primary mb-2">ताप ऊर्जा</h4>
+                            <p class="text-sm font-semibold text-text-dark/70 mb-3">परम्परागत | अनवीकरणीय</p>
+                            <p class="text-lg text-text-dark mb-4">
+                                <span class="font-bold">क्षमता:</span> 9746.37 MW
+                            </p>
+                            <p class="text-gray-600 mb-4 text-sm line-clamp-2">राज्य सरकार एवं केंद्र सरकार की परियोजनाओं से सर्वाधिक क्षमता स्थापित की गई है। इसमें कोयला, लिग्नाइट और गैस आधारित संयंत्र शामिल हैं।</p>
+                            <button onclick="showDetails('ताप ऊर्जा')" class="w-full bg-primary text-white py-2 rounded-lg font-semibold hover:bg-primary/90 transition duration-150 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">
+                                🏭 विस्तृत विवरण देखें
+                            </button>
+                        </div>
+
+                        <!-- Card 2: सौर ऊर्जा (Solar) -->
+                        <div class="glass-card p-6 rounded-xl shadow-glass bg-pastel-mint/30" data-aos="fade-up" data-aos-delay="100">
+                            <h4 class="text-2xl font-display font-bold text-primary mb-2">सौर ऊर्जा</h4>
+                            <p class="text-sm font-semibold text-text-dark/70 mb-3">गैर परम्परागत | नवीकरणीय</p>
+                            <p class="text-lg text-text-dark mb-4">
+                                <span class="font-bold">अधिष्ठापित:</span> 22,676 MW
+                            </p>
+                            <p class="text-gray-600 mb-4 text-sm line-clamp-2">सौर ऊर्जा के उत्पादन में राजस्थान देश में प्रथम स्थान रखता है। भड़ला (जोधपुर) विश्व का सबसे बड़ा सौर पार्क है।</p>
+                            <button onclick="showDetails('सौर ऊर्जा')" class="w-full bg-primary text-white py-2 rounded-lg font-semibold hover:bg-primary/90 transition duration-150 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">
+                                ☀️ विस्तृत विवरण देखें
+                            </button>
+                        </div>
+
+                        <!-- Card 3: पवन ऊर्जा (Wind) -->
+                        <div class="glass-card p-6 rounded-xl shadow-glass bg-pastel-peach/30" data-aos="fade-up" data-aos-delay="200">
+                            <h4 class="text-2xl font-display font-bold text-primary mb-2">पवन ऊर्जा</h4>
+                            <p class="text-sm font-semibold text-text-dark/70 mb-3">गैर परम्परागत | नवीकरणीय</p>
+                            <p class="text-lg text-text-dark mb-4">
+                                <span class="font-bold">अधिष्ठापित:</span> 5209 MW
+                            </p>
+                            <p class="text-gray-600 mb-4 text-sm line-clamp-2">150 मीटर की ऊँचाई पर संभावित क्षमता 127 GW है और क्षमता अधिष्ठापित करने पर राजस्थान देश में प्रथम रहा है।</p>
+                            <button onclick="showDetails('पवन ऊर्जा')" class="w-full bg-primary text-white py-2 rounded-lg font-semibold hover:bg-primary/90 transition duration-150 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">
+                                🌬️ विस्तृत विवरण देखें
+                            </button>
+                        </div>
+
+                        <!-- Card 4: जल विद्युत (Hydro) -->
+                        <div class="glass-card p-6 rounded-xl shadow-glass bg-pastel-sky/30" data-aos="fade-up" data-aos-delay="300">
+                            <h4 class="text-2xl font-display font-bold text-primary mb-2">जल विद्युत</h4>
+                            <p class="text-sm font-semibold text-text-dark/70 mb-3">परम्परागत | नवीकरणीय</p>
+                            <p class="text-lg text-text-dark mb-4">
+                                <span class="font-bold">प्रमुख स्रोत:</span> संयुक्त परियोजनाएँ
+                            </p>
+                            <p class="text-gray-600 mb-4 text-sm line-clamp-2">चम्बल, माही और भाखड़ा नांगल जैसी अंतर्राज्यीय संयुक्त परियोजनाओं के माध्यम से विद्युत उत्पादन होता है।</p>
+                            <button onclick="showDetails('जल विद्युत')" class="w-full bg-primary text-white py-2 rounded-lg font-semibold hover:bg-primary/90 transition duration-150 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">
+                                💧 विस्तृत विवरण देखें
+                            </button>
+                        </div>
+
+                        <!-- Card 5: परमाणु ऊर्जा (Nuclear) -->
+                        <div class="glass-card p-6 rounded-xl shadow-glass bg-pastel-lilac/30" data-aos="fade-up">
+                            <h4 class="text-2xl font-display font-bold text-primary mb-2">परमाणु ऊर्जा</h4>
+                            <p class="text-sm font-semibold text-text-dark/70 mb-3">गैर परम्परागत | अनवीकरणीय</p>
+                            <p class="text-lg text-text-dark mb-4">
+                                <span class="font-bold">क्षमता:</span> 1180 MW
+                            </p>
+                            <p class="text-gray-600 mb-4 text-sm line-clamp-2">राजस्थान एटॉमिक पावर स्टेशन (रावतभाटा, चित्तौड़गढ़) राज्य का पहला परमाणु ऊर्जा संयंत्र है।</p>
+                            <button onclick="showDetails('परमाणु ऊर्जा')" class="w-full bg-primary text-white py-2 rounded-lg font-semibold hover:bg-primary/90 transition duration-150 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">
+                                ⚛️ विस्तृत विवरण देखें
+                            </button>
+                        </div>
+
+                        <!-- Card 6: बायोमास ऊर्जा (Biomass) -->
+                        <div class="glass-card p-6 rounded-xl shadow-glass bg-pastel-mint/30" data-aos="fade-up" data-aos-delay="100">
+                            <h4 class="text-2xl font-display font-bold text-primary mb-2">बायोमास ऊर्जा</h4>
+                            <p class="text-sm font-semibold text-text-dark/70 mb-3">गैर परम्परागत | नवीकरणीय</p>
+                            <p class="text-lg text-text-dark mb-4">
+                                <span class="font-bold">क्षमता:</span> 128.45 MW
+                            </p>
+                            <p class="text-gray-600 mb-4 text-sm line-clamp-2">सरसों की तूड़ी, गन्ने की खोई और जैविक अपशिष्ट इसके प्रमुख स्रोत हैं। पहला संयंत्र पद्मपुर (श्रीगंगानगर) में स्थापित किया गया।</p>
+                            <button onclick="showDetails('बायोमास ऊर्जा')" class="w-full bg-primary text-white py-2 rounded-lg font-semibold hover:bg-primary/90 transition duration-150 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">
+                                🌱 विस्तृत विवरण देखें
+                            </button>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- 5. Detailed Data Section (Accordion) -->
+                <section id="detailed-data" class="mb-10 pt-10">
+                    <h3 class="text-3xl font-display font-bold text-text-dark mb-6 border-b pb-2">विस्तृत सारणीबद्ध नोट्स</h3>
+                    <p class="text-gray-600 mb-6" data-aos="fade-right">यह सारणीबद्ध नोट्स आपके अध्ययन सामग्री के सभी महत्वपूर्ण विवरणों, विशेष रूप से दिसंबर 2024 तक के नवीनतम आँकड़ों, परियोजनाओं और नीतियों को कवर करते हैं।</p>
+
+                    <!-- I. Static Capacity Summary Table -->
+                    <div class="glass-card p-4 rounded-xl shadow-glass bg-pastel-sky/30 mb-8" data-aos="fade-up">
+                        <h4 class="text-xl font-display font-bold text-text-dark mb-3">I. कुल क्षमता एवं वर्गीकरण (Total Capacity & Classification)</h4>
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-gray-200">
+                                <thead class="bg-white">
+                                    <tr>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">विवरण</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">तथ्य</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-200 text-sm">
+                                    <tr><td class="px-6 py-2 whitespace-nowrap font-medium">कुल अधिष्ठापित क्षमता (Dec 2024)</td><td class="px-6 py-2 whitespace-nowrap text-primary font-bold">26325.19 MW</td></tr>
+                                    <tr><td class="px-6 py-2 whitespace-nowrap font-medium">राज्य सरकार की तापीय क्षमता</td><td class="px-6 py-2 whitespace-nowrap">7830 MW (कुल का 41.49%)</td></tr>
+                                    <tr><td class="px-6 py-2 whitespace-nowrap font-medium">सौर + पवन ऊर्जा का अंश</td><td class="px-6 py-2 whitespace-nowrap">कुल क्षमता का 37.59%</td></tr>
+                                    <tr><td class="px-6 py-2 whitespace-nowrap font-medium">उत्पादन का अवरोही क्रम (Dec 2024)</td><td class="px-6 py-2 whitespace-nowrap">तापीय > सौर > पवन > जल विद्युत > गैस > परमाणु > बायोमास</td></tr>
+                                    <tr><td class="px-6 py-2 whitespace-nowrap font-medium">ऊर्जा वर्गीकरण</td><td class="px-6 py-2 text-wrap">परम्परागत (कोयला, जल विद्युत), गैर परम्परागत (सौर, पवन, परमाणु), नवीकरणीय (सौर, पवन), अनवीकरणीय (जीवाश्म, नाभिकीय)।</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <!-- Accordion Container -->
+                    <div id="accordion-container" class="space-y-4">
+                        <!-- II. तापीय ऊर्जा परियोजनाएँ (Thermal Power Projects) -->
+                        <div class="accordion-item glass-card rounded-xl shadow-glass" data-aos="fade-up">
+                            <button class="accordion-header w-full flex justify-between items-center p-4 font-semibold text-lg text-text-dark hover:bg-white/50 rounded-xl transition duration-200 focus:outline-none focus:ring-2 focus:ring-primary" aria-expanded="false" aria-controls="content-2">
+                                II. तापीय ऊर्जा परियोजनाएँ <span class="text-primary">(Thermal Power Projects)</span>
+                                <svg class="w-5 h-5 transition-transform duration-300 transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                            </button>
+                            <div id="content-2" class="accordion-content overflow-hidden max-h-0 transition-max-height duration-500 ease-in-out">
+                                <div class="p-4 pt-0">
+                                    <div class="overflow-x-auto">
+                                        <table class="min-w-full divide-y divide-gray-200 text-sm border-t">
+                                            <thead class="bg-pastel-lilac/50">
+                                                <tr>
+                                                    <th class="px-6 py-3 text-left font-medium text-gray-700">परियोजना का नाम</th>
+                                                    <th class="px-6 py-3 text-left font-medium text-gray-700">स्थान/क्षमता</th>
+                                                    <th class="px-6 py-3 text-left font-medium text-gray-700 hidden sm:table-cell">विवरण</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody class="divide-y divide-gray-100 bg-white">
+                                                <tr><td class="px-6 py-2 font-medium">सूरतगढ़ सुपर थर्मल</td><td class="px-6 py-2">गंगानगर / 2820 MW</td><td class="px-6 py-2 hidden sm:table-cell">सर्वाधिक क्षमता वाला, सुपर क्रिटिकल इकाईयाँ।</td></tr>
+                                                <tr><td class="px-6 py-2 font-medium">छबड़ा सुपर पावर स्टेशन</td><td class="px-6 py-2">बाराँ / 2320 MW</td><td class="px-6 py-2 hidden sm:table-cell">दूसरा सर्वाधिक क्षमता वाला, सुपर क्रिटिकल।</td></tr>
+                                                <tr><td class="px-6 py-2 font-medium">कोटा थर्मल पावर</td><td class="px-6 py-2">कोटा / 1240 MW</td><td class="px-6 py-2 hidden sm:table-cell">राज्य का पहला ताप विद्युत गृह।</td></tr>
+                                                <tr><td class="px-6 py-2 font-medium">गिरल लिग्नाइट</td><td class="px-6 py-2">बाड़मेर</td><td class="px-6 py-2 hidden sm:table-cell">प्रथम लिग्नाइट आधारित विद्युत गृह, गैसीकरण आधारित (जर्मनी सहयोग)।</td></tr>
+                                                <tr><td class="px-6 py-2 font-medium">गुढा लिग्नाइट</td><td class="px-6 py-2">बीकानेर / 135 MW</td><td class="px-6 py-2 hidden sm:table-cell">निजी क्षेत्र का पहला लिग्नाइट आधारित विद्युत गृह।</td></tr>
+                                                <tr><td class="px-6 py-2 font-medium">अन्ता गैस पावर</td><td class="px-6 py-2">बाराँ / 420 MW</td><td class="px-6 py-2 hidden sm:table-cell">केन्द्रीय उपक्रम NTPC द्वारा स्थापित।</td></tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- III. जल विद्युत एवं परमाणु ऊर्जा (Hydro & Atomic Energy) -->
+                        <div class="accordion-item glass-card rounded-xl shadow-glass" data-aos="fade-up" data-aos-delay="100">
+                            <button class="accordion-header w-full flex justify-between items-center p-4 font-semibold text-lg text-text-dark hover:bg-white/50 rounded-xl transition duration-200 focus:outline-none focus:ring-2 focus:ring-primary" aria-expanded="false" aria-controls="content-3">
+                                III. जल विद्युत एवं परमाणु ऊर्जा <span class="text-primary">(Hydro & Atomic Energy)</span>
+                                <svg class="w-5 h-5 transition-transform duration-300 transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                            </button>
+                            <div id="content-3" class="accordion-content overflow-hidden max-h-0 transition-max-height duration-500 ease-in-out">
+                                <div class="p-4 pt-0">
+                                    <div class="overflow-x-auto">
+                                        <table class="min-w-full divide-y divide-gray-200 text-sm border-t">
+                                            <thead class="bg-pastel-mint/50">
+                                                <tr>
+                                                    <th class="px-6 py-3 text-left font-medium text-gray-700">परियोजना का नाम</th>
+                                                    <th class="px-6 py-3 text-left font-medium text-gray-700">स्थान</th>
+                                                    <th class="px-6 py-3 text-left font-medium text-gray-700 hidden sm:table-cell">राजस्थान का अंश / विवरण</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody class="divide-y divide-gray-100 bg-white">
+                                                <tr><td class="px-6 py-2 font-medium">चम्बल परियोजना</td><td class="px-6 py-2">चम्बल नदी</td><td class="px-6 py-2 hidden sm:table-cell">193 MW (50% अंश), संयुक्त परियोजना।</td></tr>
+                                                <tr><td class="px-6 py-2 font-medium">माही परियोजना</td><td class="px-6 py-2">बाँसवाड़ा</td><td class="px-6 py-2 hidden sm:table-cell">140 MW (100% उपभोग)।</td></tr>
+                                                <tr><td class="px-6 py-2 font-medium">रावतभाटा परमाणु (RAPS)</td><td class="px-6 py-2">चित्तौड़गढ़</td><td class="px-6 py-2 hidden sm:table-cell">1180 MW, कनाडा के सहयोग से स्थापित (1965)।</td></tr>
+                                                <tr><td class="px-6 py-2 font-medium">माही न्यूक्लियर प्लांट</td><td class="px-6 py-2">बाँसवाड़ा</td><td class="px-6 py-2 hidden sm:table-cell">2800 MW (4x700 MW) प्रस्तावित।</td></tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- IV. नवीकरणीय ऊर्जा (Renewable Energy) -->
+                        <div class="accordion-item glass-card rounded-xl shadow-glass" data-aos="fade-up" data-aos-delay="200">
+                            <button class="accordion-header w-full flex justify-between items-center p-4 font-semibold text-lg text-text-dark hover:bg-white/50 rounded-xl transition duration-200 focus:outline-none focus:ring-2 focus:ring-primary" aria-expanded="false" aria-controls="content-4">
+                                IV. नवीकरणीय ऊर्जा <span class="text-primary">(Solar, Wind, Biomass)</span>
+                                <svg class="w-5 h-5 transition-transform duration-300 transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                            </button>
+                            <div id="content-4" class="accordion-content overflow-hidden max-h-0 transition-max-height duration-500 ease-in-out">
+                                <div class="p-4 pt-0">
+                                    <h5 class="font-bold text-md text-text-dark mb-2 border-b">1. सौर ऊर्जा (Solar Energy)</h5>
+                                    <ul class="list-disc list-inside ml-4 text-sm text-gray-700 space-y-1">
+                                        <li>संभावित क्षमता: <span class="font-semibold">142 GW</span>।</li>
+                                        <li>SEEZ: जोधपुर, जैसलमेर, बाड़मेर व बीकानेर।</li>
+                                        <li>विश्व का सबसे बड़ा सोलर पार्क: <span class="font-semibold">भड़ला (जोधपुर) - 2245 MW</span>।</li>
+                                        <li>पहली निजी परियोजना: खींवसर (नागौर)।</li>
+                                    </ul>
+                                    <h5 class="font-bold text-md text-text-dark mt-4 mb-2 border-b">2. पवन ऊर्जा (Wind Energy)</h5>
+                                    <ul class="list-disc list-inside ml-4 text-sm text-gray-700 space-y-1">
+                                        <li>संभावित क्षमता (150 मी. ऊँचाई): <span class="font-semibold">284 GW (देश में शीर्ष)</span>।</li>
+                                        <li>अधिष्ठापित क्षमता (Dec 2024): <span class="font-semibold">5209 MW</span>।</li>
+                                        <li>पहली परियोजना: अमर सागर, जैसलमेर।</li>
+                                        <li>ग्रीन एनर्जी कॉरिडोर: चित्तौड़गढ़, अजमेर, नागौर, जोधपुर, बीकानेर।</li>
+                                    </ul>
+                                    <h5 class="font-bold text-md text-text-dark mt-4 mb-2 border-b">3. बायोमास (Biomass)</h5>
+                                    <ul class="list-disc list-inside ml-4 text-sm text-gray-700 space-y-1">
+                                        <li>पहला बायोमास संयंत्र: पद्मपुर (श्रीगंगानगर)।</li>
+                                        <li>नीति: बायोमास एण्ड वेस्ट टू ऐनर्जी नीति (29 सितम्बर 2023)।</li>
+                                        <li>बायोफ्यूल प्राधिकरण: 2007 में गठित (रतनजोत/करंज आधारित)।</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- V. नवीनतम नीतियाँ एवं योजनाएँ (Latest Policies & Schemes) -->
+                        <div class="accordion-item glass-card rounded-xl shadow-glass" data-aos="fade-up" data-aos-delay="300">
+                            <button class="accordion-header w-full flex justify-between items-center p-4 font-semibold text-lg text-text-dark hover:bg-white/50 rounded-xl transition duration-200 focus:outline-none focus:ring-2 focus:ring-primary" aria-expanded="false" aria-controls="content-5">
+                                V. नवीनतम नीतियाँ एवं योजनाएँ <span class="text-primary">(Latest Policies & Schemes)</span>
+                                <svg class="w-5 h-5 transition-transform duration-300 transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                            </button>
+                            <div id="content-5" class="accordion-content overflow-hidden max-h-0 transition-max-height duration-500 ease-in-out">
+                                <div class="p-4 pt-0">
+                                    <ul class="list-disc list-inside ml-4 text-sm text-gray-700 space-y-2">
+                                        <li><span class="font-semibold">एकीकृत स्वच्छ ऊर्जा नीति (4 दिसम्बर 2024):</span> 2030 तक 125 GW नवीकरणीय ऊर्जा का लक्ष्य (90 GW सौर, 25 GW पवन)।</li>
+                                        <li><span class="font-semibold">ग्रीन हाइड्रोजन नीति (29 सितम्बर 2023):</span> 2030 तक 2000 KTPA हरित हाइड्रोजन उत्पादन का लक्ष्य।</li>
+                                        <li><span class="font-semibold">PM सूर्य घर मुफ्त बिजली योजना (13 फरवरी 2024):</span> हर महीने 300 यूनिट तक मुफ्त बिजली।</li>
+                                        <li><span class="font-semibold">PM-KUSUM योजना (2019):</span> कृषि में सौर ऊर्जा को बढ़ावा (घटक A, B, C)।</li>
+                                        <li><span class="font-semibold">RRECL का कार्य:</span> सरकारी भवनों पर रूफटॉप सोलर (RTS) संयंत्रों की स्थापना।</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- VI. प्रमुख संस्थाएँ (Key Institutions) -->
+                        <div class="accordion-item glass-card rounded-xl shadow-glass" data-aos="fade-up" data-aos-delay="400">
+                            <button class="accordion-header w-full flex justify-between items-center p-4 font-semibold text-lg text-text-dark hover:bg-white/50 rounded-xl transition duration-200 focus:outline-none focus:ring-2 focus:ring-primary" aria-expanded="false" aria-controls="content-6">
+                                VI. प्रमुख संस्थाएँ <span class="text-primary">(Key Institutions)</span>
+                                <svg class="w-5 h-5 transition-transform duration-300 transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                            </button>
+                            <div id="content-6" class="accordion-content overflow-hidden max-h-0 transition-max-height duration-500 ease-in-out">
+                                <div class="p-4 pt-0">
+                                    <div class="overflow-x-auto">
+                                        <table class="min-w-full divide-y divide-gray-200 text-sm border-t">
+                                            <thead class="bg-pastel-lilac/50">
+                                                <tr>
+                                                    <th class="px-6 py-3 text-left font-medium text-gray-700">संस्था का नाम</th>
+                                                    <th class="px-6 py-3 text-left font-medium text-gray-700">स्थापना</th>
+                                                    <th class="px-6 py-3 text-left font-medium text-gray-700 hidden sm:table-cell">कार्य</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody class="divide-y divide-gray-100 bg-white">
+                                                <tr><td class="px-6 py-2 font-medium">RRECL</td><td class="px-6 py-2">अगस्त 2002</td><td class="px-6 py-2 hidden sm:table-cell">नवीकरणीय ऊर्जा विकास हेतु नोडल एजेंसी।</td></tr>
+                                                <tr><td class="px-6 py-2 font-medium">RERC</td><td class="px-6 py-2">2000</td><td class="px-6 py-2 hidden sm:table-cell">बिजली की खरीद और दरों का नियंत्रण।</td></tr>
+                                                <tr><td class="px-6 py-2 font-medium">RVUNL</td><td class="px-6 py-2">2000</td><td class="px-6 py-2 hidden sm:table-cell">विद्युत उत्पादन निगम लिमिटेड।</td></tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </section>
+            </div>
+
+            <!-- Right Column: Chart and Quick Links -->
+            <div class="lg:col-span-1 lg:space-y-8 mt-10 lg:mt-0">
+                
+                <!-- 4. Chart 1: Energy Mix (Doughnut) -->
+                <section id="stats" class="glass-card p-6 rounded-xl shadow-xl-light" data-aos="fade-left">
+                    <h3 class="text-2xl font-display font-bold text-text-dark mb-4 border-b pb-2">ऊर्जा मिश्रण (Energy Mix)</h3>
+                    <div class="h-64 flex justify-center items-center">
+                        <canvas id="energyMixChart" role="img" aria-label="राजस्थान में कुल ऊर्जा अधिष्ठापित क्षमता का मिश्रण, 62.41% गैर परम्परागत और 37.59% परम्परागत ऊर्जा स्रोत।"></canvas>
+                    </div>
+                    <p class="text-center text-sm text-gray-500 mt-4">
+                        दिसंबर 2024 तक कुल स्थापित क्षमता में स्रोतों का योगदान।
+                    </p>
+                </section>
+
+                <!-- 4b. Chart 2: Production Order (Bar Chart) - NEW CHART -->
+                <section id="production-order" class="glass-card p-6 rounded-xl shadow-xl-light" data-aos="fade-left" data-aos-delay="100">
+                    <h3 class="text-2xl font-display font-bold text-text-dark mb-4 border-b pb-2">उत्पादन का अवरोही क्रम</h3>
+                    <div class="h-64 flex justify-center items-center">
+                        <canvas id="productionOrderChart" role="img" aria-label="ऊर्जा उत्पादन का अवरोही क्रम, तापीय ऊर्जा का उत्पादन सर्वाधिक है।"></canvas>
+                    </div>
+                    <p class="text-center text-sm text-gray-500 mt-4">
+                        दिसंबर 2024 तक उत्पादन क्षमता का क्रम।
+                    </p>
+                </section>
+
+                <!-- Quick Links/Key Facts -->
+                <section class="glass-card p-6 rounded-xl shadow-xl-light bg-pastel-peach/30" data-aos="fade-left" data-aos-delay="200">
+                    <h3 class="text-2xl font-display font-bold text-text-dark mb-4 border-b pb-2">महत्वपूर्ण तथ्य</h3>
+                    <ul class="space-y-3 text-sm text-gray-700">
+                        <li class="flex items-start">
+                            <span class="text-primary mr-2 text-lg">💡</span>
+                            <div>
+                                <span class="font-semibold">सर्वाधिक क्षमता वाला ताप संयंत्र:</span> सूरतगढ़ सुपर थर्मल पावर स्टेशन (2820 MW)।
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-primary mr-2 text-lg">🥇</span>
+                            <div>
+                                <span class="font-semibold">सौर ऊर्जा में स्थान:</span> देश में प्रथम।
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-primary mr-2 text-lg">⚙️</span>
+                            <div>
+                                <span class="font-semibold">RSEB का विभाजन:</span> वर्ष 2000 में पाँच कंपनियों में किया गया।
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-primary mr-2 text-lg">📜</span>
+                            <div>
+                                <span class="font-semibold">नवीनतम नीति:</span> राजस्थान अक्षय ऊर्जा नीति 2023 (6 अक्टूबर, 2023)।
+                            </div>
+                        </li>
+                    </ul>
+                </section>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Detailed Modal Structure (Hidden by default) -->
+    <div id="detailModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden items-center justify-center p-4 z-[999]" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+        <div class="bg-white p-6 rounded-xl shadow-2xl max-w-lg w-full transform transition-all duration-300 scale-95" role="document">
+            <div class="flex justify-between items-center border-b pb-2 mb-4">
+                <h3 id="modalTitle" class="text-2xl font-display font-bold text-primary">विस्तृत जानकारी</h3>
+                <button onclick="closeModal()" class="text-gray-500 hover:text-gray-800 focus:outline-none focus:ring-2 focus:ring-primary rounded-full p-1" aria-label="Modal बंद करें">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+            <div id="modalContent" class="text-gray-700 space-y-3 max-h-96 overflow-y-auto">
+                <!-- Content will be populated by JS -->
+                <p>यहां विस्तृत जानकारी लोड होगी...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 5. Footer -->
+    <footer class="bg-text-dark text-white py-8 mt-16" data-aos="fade-up">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p class="text-lg font-display mb-2">"सफलता का रास्ता ऊर्जा और दृढ़ संकल्प से होकर गुजरता है।"</p>
+            <p class="text-sm text-gray-400">&copy; 2025 राजस्थान ऊर्जा सूचना केंद्र | डिज़ाइन: Gemini द्वारा</p>
+            <div class="mt-4 space-x-4">
+                <a href="#" class="text-gray-400 hover:text-primary transition duration-150">प्राइवेसी</a>
+                <a href="#" class="text-gray-400 hover:text-primary transition duration-150">संपर्क</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript for Interactivity and Charts -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        // Initialize AOS
+        AOS.init({
+            duration: 800,
+            once: true,
+            disable: 'mobile' // Disable on mobile to save performance
+        });
+
+        // --- 1. Scroll Progress Bar ---
+        const progressBar = document.getElementById('progressBar');
+        window.addEventListener('scroll', () => {
+            const totalScroll = document.documentElement.scrollTop;
+            const windowHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (totalScroll / windowHeight) * 100;
+            progressBar.style.width = scrolled + '%';
+        });
+
+        // --- 2. Chart.js Initialization ---
+        function initChart() {
+            // Chart 1: Energy Mix (Doughnut)
+            const ctxMix = document.getElementById('energyMixChart').getContext('2d');
+            const dataMix = {
+                labels: ['गैर परम्परागत ऊर्जा (नवीकरणीय)', 'परम्परागत ऊर्जा'],
+                datasets: [{
+                    data: [62.41, 37.59], // Data from the provided text
+                    backgroundColor: [
+                        '#524133', // Primary Brown
+                        '#B8A28E'  // Taupe
+                    ],
+                    hoverOffset: 10,
+                    borderWidth: 0,
+                }]
+            };
+
+            const configMix = {
+                type: 'doughnut',
+                data: dataMix,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                font: {
+                                    family: 'Noto Sans Devanagari',
+                                    size: 14
+                                }
+                            }
+                        },
+                        title: { display: false }
+                    }
+                }
+            };
+            new Chart(ctxMix, configMix);
+
+            // Chart 2: Production Order (Bar Chart) - NEW CHART LOGIC
+            initBarChart();
+        }
+
+        function initBarChart() {
+            const ctxBar = document.getElementById('productionOrderChart').getContext('2d');
+            
+            // Mock data based on the required descending order: तापीय > सौर > पवन > जल विद्युत > गैस > परमाणु > बायोमास
+            const dataBar = {
+                labels: ['तापीय', 'सौर', 'पवन', 'जल विद्युत', 'गैस', 'परमाणु', 'बायोमास'],
+                datasets: [{
+                    label: 'उत्पादन क्षमता (सापेक्षिक अंश)',
+                    data: [35, 28, 20, 8, 4, 3, 2], // Mock percentages maintaining the order
+                    backgroundColor: [
+                        '#524133', // Primary
+                        '#36422E', // Deep Espresso
+                        '#76614F', // Khaki Brown
+                        '#96806C', // Medium Brown
+                        '#B8A28E', // Taupe
+                        '#D4C3A9', // Light Beige
+                        '#D3A0A0'  // Slightly contrasting warm tone for the smallest item
+                    ],
+                    borderColor: '#FBF8F0', // Cream border
+                    borderWidth: 1
+                }]
+            };
+
+            const configBar = {
+                type: 'bar',
+                data: dataBar,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    indexAxis: 'y', // Horizontal bars
+                    plugins: {
+                        legend: { display: false },
+                        title: { display: false }
+                    },
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'सापेक्षिक अंश (%)',
+                                font: { family: 'Noto Sans Devanagari' }
+                            },
+                            grid: { display: false }
+                        },
+                        y: {
+                            ticks: { font: { family: 'Noto Sans Devanagari', size: 12 } },
+                            grid: { display: false }
+                        }
+                    }
+                }
+            };
+            new Chart(ctxBar, configBar);
+        }
+
+        window.onload = initChart;
+
+        // --- 3. Modal / Detailed View (No change needed) ---
+        const resourceDetails = {
+            'ताप ऊर्जा': `
+                <h4 class="text-xl font-bold text-text-dark mb-2">मुख्य ताप विद्युत संयंत्र (कोयला आधारित):</h4>
+                <ul class="list-disc list-inside space-y-1 ml-4 text-sm">
+                    <li>सूरतगढ़ सुपर थर्मल पावर स्टेशन (गंगानगर): कुल क्षमता 2820 MW (सर्वाधिक)।</li>
+                    <li>छबड़ा सुपर पावर स्टेशन (बारां): कुल क्षमता 2320 MW (दूसरा सर्वाधिक)।</li>
+                    <li>कोटा थर्मल पावर स्टेशन (कोटा): कुल क्षमता 1240 MW।</li>
+                    <li>कालीसिंध थर्मल पावर स्टेशन (झालावाड़): कुल क्षमता 1200 MW।</li>
+                </ul>
+                <h4 class="text-xl font-bold text-text-dark mt-4 mb-2">लिग्नाइट आधारित:</h4>
+                <p class="text-sm">गुढ़ा (बीकानेर) - राज्य का पहला निजी क्षेत्र का लिग्नाइट आधारित विद्युत गृह।</p>
+                <h4 class="text-xl font-bold text-text-dark mt-4 mb-2">गैस आधारित:</h4>
+                <p class="text-sm">रामगढ़ (जैसलमेर), धौलपुर, और अन्ता (बारां - NTPC द्वारा स्थापित)।</p>
+            `,
+            'सौर ऊर्जा': `
+                <h4 class="text-xl font-bold text-text-dark mb-2">सौर ऊर्जा की स्थिति:</h4>
+                <p class="text-sm">संभावित क्षमता: 142 GW। यह क्षेत्र जोधपुर, जैसलमेर, बाड़मेर और बीकानेर (SEEZ) में केंद्रित है।</p>
+                <h4 class="text-xl font-bold text-text-dark mt-4 mb-2">प्रमुख सौर पार्क:</h4>
+                <ul class="list-disc list-inside space-y-1 ml-4 text-sm">
+                    <li>भड़ला (जोधपुर): विश्व का सबसे बड़ा सौर पार्क (2245 MW)।</li>
+                    <li>खींवसर (नागौर): राजस्थान का पहला सोलर पार्क।</li>
+                    <li>पूनम सोलर पार्क (बीकानेर): 2450 MW।</li>
+                </ul>
+            `,
+            'पवन ऊर्जा': `
+                <h4 class="text-xl font-bold text-text-dark mb-2">पवन ऊर्जा की स्थिति:</h4>
+                <p class="text-sm">150 मीटर की ऊँचाई पर संभावित क्षमता: 127 GW। राजस्थान पवन ऊर्जा क्षमता की संभावित क्षमता के साथ देश में दूसरा स्थान रखता है।</p>
+                <h4 class="text-xl font-bold text-text-dark mt-4 mb-2">प्रमुख परियोजनाएँ:</h4>
+                <p class="text-sm">अमरसागर (जैसलमेर), देवगढ़ (प्रतापगढ़), तोसड़ी परियोजना (फलोदी)।</p>
+            `,
+            ' जल विद्युत': `
+                <h4 class="text-xl font-bold text-text-dark mb-2">जल विद्युत परियोजनाएँ:</h4>
+                <ul class="list-disc list-inside space-y-1 ml-4 text-sm">
+                    <li>चम्बल परियोजना: राजस्थान व मध्य प्रदेश की संयुक्त परियोजना (50:50)।</li>
+                    <li>माही परियोजना: राजस्थान व गुजरात की संयुक्त परियोजना (45:55)।</li>
+                    <li>भाखड़ा नांगल परियोजना: राजस्थान का अंश 15.2 प्रतिशत।</li>
+                    <li>लघु परियोजनाएँ: अनास (बाँसवाड़ा), जाखम बाँध (प्रतापगढ़) और इंदिरा गांधी नहर शाखाएँ।</li>
+                </ul>
+            `,
+            'परमाणु ऊर्जा': `
+                <h4 class="text-xl font-bold text-text-dark mb-2">परमाणु ऊर्जा संयंत्र:</h4>
+                <ul class="list-disc list-inside space-y-1 ml-4 text-sm">
+                    <li>रावतभाटा (चित्तौड़गढ़): राजस्थान का पहला और भारत का दूसरा परमाणु ऊर्जा संयंत्र। कुल क्षमता: 1180 MW।</li>
+                    <li>बाँसवाड़ा न्यूक्लियर पावर प्लांट: 700-700 MW की 4 इकाइयाँ (कुल 2800 MW) स्थापित करने का प्रस्ताव है।</li>
+                </ul>
+            `,
+            'बायोमास ऊर्जा': `
+                <h4 class="text-xl font-bold text-text-dark mb-2">बायोमास के स्रोत:</h4>
+                <p class="text-sm">सरसों की तूड़ी, गन्ने की खोई, धान की भूसी, इसरायल बबूल और जैविक अपशिष्ट।</p>
+                <h4 class="text-xl font-bold text-text-dark mt-4 mb-2">प्रमुख तथ्य:</h4>
+                <ul class="list-disc list-inside space-y-1 ml-4 text-sm">
+                    <li>कुल क्षमता (दिसंबर 2024): 128.45 MW।</li>
+                    <li>पहला संयंत्र: पद्मपुर (श्रीगंगानगर) में स्थापित (2010)।</li>
+                    <li>बायोडीजल प्लांट: झालर-मोटा (उदयपुर) में स्थित है।</li>
+                </ul>
+            `,
+        };
+
+        const detailModal = document.getElementById('detailModal');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalContent = document.getElementById('modalContent');
+
+        function showDetails(resourceName) {
+            // Update modal content
+            modalTitle.textContent = resourceName + ' - विस्तृत जानकारी';
+            modalContent.innerHTML = resourceDetails[resourceName] || '<p>इस संसाधन के लिए विस्तृत जानकारी उपलब्ध नहीं है।</p>';
+
+            // Show modal
+            detailModal.classList.remove('hidden');
+            detailModal.classList.add('flex');
+            document.body.style.overflow = 'hidden'; // Disable background scroll
+
+            // Animation effect
+            const modalDialog = detailModal.querySelector('[role="document"]');
+            setTimeout(() => {
+                modalDialog.classList.remove('scale-95');
+            }, 10);
+        }
+
+        function closeModal() {
+            // Animation effect
+            const modalDialog = detailModal.querySelector('[role="document"]');
+            modalDialog.classList.add('scale-95');
+
+            // Hide modal after animation
+            setTimeout(() => {
+                detailModal.classList.add('hidden');
+                detailModal.classList.remove('flex');
+                document.body.style.overflow = ''; // Re-enable background scroll
+            }, 300);
+        }
+
+        // Close modal on escape key press
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && !detailModal.classList.contains('hidden')) {
+                closeModal();
+            }
+        });
+
+        // Close modal when clicking outside (on the overlay)
+        detailModal.addEventListener('click', (e) => {
+            if (e.target === detailModal) {
+                closeModal();
+            }
+        });
+
+        // --- 4. Client-Side Search/Filter (No change needed) ---
+        document.getElementById('resource-search').addEventListener('input', function(e) {
+            const query = e.target.value.toLowerCase();
+            const cards = document.querySelectorAll('#resource-grid > div');
+
+            cards.forEach(card => {
+                const title = card.querySelector('h4').textContent.toLowerCase();
+                if (title.includes(query)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+
+        // --- 5. Accordion Logic (No change needed) ---
+        document.addEventListener('DOMContentLoaded', () => {
+            const headers = document.querySelectorAll('.accordion-header');
+            
+            headers.forEach(header => {
+                header.addEventListener('click', () => {
+                    const item = header.closest('.accordion-item');
+                    const content = item.querySelector('.accordion-content');
+                    const icon = header.querySelector('svg');
+                    
+                    const isExpanded = header.getAttribute('aria-expanded') === 'true';
+
+                    // Collapse all other open items
+                    document.querySelectorAll('.accordion-item').forEach(otherItem => {
+                        if (otherItem !== item) {
+                            const otherHeader = otherItem.querySelector('.accordion-header');
+                            const otherContent = otherItem.querySelector('.accordion-content');
+                            const otherIcon = otherItem.querySelector('svg');
+
+                            if (otherHeader.getAttribute('aria-expanded') === 'true') {
+                                otherHeader.setAttribute('aria-expanded', 'false');
+                                otherContent.style.maxHeight = '0';
+                                otherIcon.classList.remove('rotate-180');
+                            }
+                        }
+                    });
+
+                    // Toggle current item
+                    if (isExpanded) {
+                        // Collapse
+                        header.setAttribute('aria-expanded', 'false');
+                        content.style.maxHeight = '0';
+                        icon.classList.remove('rotate-180');
+                    } else {
+                        // Expand
+                        header.setAttribute('aria-expanded', 'true');
+                        // Use scrollHeight to set dynamic height for smooth transition
+                        content.style.maxHeight = content.scrollHeight + 'px';
+                        icon.classList.add('rotate-180');
+                    }
+                });
+
+                // Recalculate max-height on resize if expanded
+                window.addEventListener('resize', () => {
+                    if (header.getAttribute('aria-expanded') === 'true') {
+                        const content = header.closest('.accordion-item').querySelector('.accordion-content');
+                        content.style.maxHeight = content.scrollHeight + 'px';
+                    }
+                });
+            });
+        });
+    </script>
+
+    <!-- README -->
+    <!--
+    README: राजस्थान ऊर्जा डैशबोर्ड (Single-Page HTML)
+
+    यह फ़ाइल एक एकल-पृष्ठ, पूर्णतः प्रतिक्रियाशील (fully responsive) वेबसाइट है जिसमें सभी HTML, CSS (Tailwind utilities), और JavaScript (AOS, Chart.js) एक ही फ़ाइल में एम्बेडेड हैं।
+
+    1. सामग्री (Content) बदलें:
+        - मुख्य शीर्षक और सारांश (Hero Section) बदलने के लिए `<section id="hero">` के अंदर के टेक्स्ट को संपादित करें।
+        - कार्ड की सामग्री (`ताप ऊर्जा`, `सौर ऊर्जा`, आदि) बदलने के लिए `<div id="resource-grid">` के अंदर प्रत्येक `div.glass-card` के हिंदी टेक्स्ट को संपादित करें।
+        - विस्तृत विवरण (Modal) का कंटेंट बदलने के लिए, `resourceDetails` ऑब्जेक्ट को `<script>` टैग के अंदर JS सेक्शन में बदलें। प्रत्येक कुंजी (Key) कार्ड के शीर्षक से मेल खानी चाहिए।
+        - **विस्तृत सारणीबद्ध नोट्स** बदलने के लिए `<section id="detailed-data">` के अंदर की सारणियों और सूचियों को संपादित करें।
+
+    2. कलर पैलेट (Color Palette) बदलें:
+        - **वर्तमान पैलेट (Earthy/Brown Tones):**
+            - 'primary': #524133 (CTA/Borders)
+            - 'bg-light': #FBF8F0 (Main Background)
+            - 'pastel-lilac': #B8A28E (Taupe)
+            - 'pastel-mint': #96806C (Medium Brown)
+            - 'pastel-peach': #76614F (Khaki Brown)
+            - 'pastel-sky': #D4C3A9 (Light Beige/Hero BG)
+            - 'text-dark': #36422E (Text/Footer)
+        - फ़ाइल के `<script>` टैग के अंदर `tailwind.config` ऑब्जेक्ट में `colors` एक्सटेंशन को बदलें।
+
+    3. फ़ॉन्ट (Fonts) बदलें:
+        - `fontFamily` एक्सटेंशन को `tailwind.config` के अंदर बदलें।
+        - Google Fonts लिंक को `<head>` सेक्शन में अपडेट करें।
+
+    4. चार्ट डेटा बदलें:
+        - `initChart()` फ़ंक्शन के अंदर `dataMix` ऑब्जेक्ट को ऊर्जा मिश्रण के लिए अपडेट करें।
+        - **नए बार चार्ट के लिए:** `initBarChart()` फ़ंक्शन के अंदर `dataBar` ऑब्जेक्ट में `data: [35, 28, 20, 8, 4, 3, 2]` को अपने वास्तविक या अनुमानित प्रतिशत से बदलें, ध्यान रहे कि यह क्रम तापीय > सौर > पवन > जल विद्युत > गैस > परमाणु > बायोमास का हो।
+
+    5. फ़ाइल/फ़ोल्डर संरचना (Recommended Structure):
+        - चूँकि यह एक सिंगल-फाइल ऐप है, किसी फ़ोल्डर संरचना की आवश्यकता नहीं है।
+
+    6. एनिमेशन (Animations):
+        - नए सेक्शन या तत्वों में AOS एनिमेशन जोड़ने के लिए `data-aos="fade-up"`, `data-aos="zoom-in"`, या `data-aos="fade-left"` जैसे एट्रीब्यूट्स का उपयोग करें।
+    -->
