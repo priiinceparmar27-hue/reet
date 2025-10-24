@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>राजस्थान जनसंख्या डैशबोर्ड (2011)</title>
+    <!-- Chosen Palette: Calm Harmony -->
+    <!-- Application Structure Plan: The application is structured as an interactive dashboard with a main navigation bar (tabs) for thematic sections (Distribution, Growth, Density, Sex Ratio, Literacy, Social Structure). This task-oriented design allows users to directly access topics of interest, which is more user-friendly than a linear scroll. The content area dynamically updates based on the selected tab. Within each section, interactive buttons and toggles allow users to switch between data views (e.g., 'Highest' vs. 'Lowest' districts, 'Rural' vs. 'Urban' data), making the data exploration focused and preventing information overload. This structure prioritizes user-driven discovery over passive reading, which is ideal for a dense data report. -->
+    <!-- Visualization & Content Choices: Key metrics are shown as high-impact cards (HTML/Tailwind) for a quick overview (Goal: Inform). Core comparisons (e.g., highest/lowest districts) use interactive horizontal bar charts (Chart.js/Canvas), which are excellent for comparing categories with long labels (Goal: Compare). Compositional data like Rural/Urban or SC/ST splits are shown with Doughnut charts (Chart.js/Canvas) for clear part-to-whole understanding (Goal: Compare). The critical decline in Child Sex Ratio is highlighted with a simple, starkly colored bar chart to draw attention (Goal: Inform). All visualizations are coupled with dynamic text blocks (updated via JS) that provide context and key insights from the source report, ensuring charts are never presented without explanation. Interactions like tab-switching and data-toggling are handled by vanilla JS to update both charts and text, creating a cohesive and interactive experience. NO SVG/Mermaid are used; all visuals are either Chart.js/Canvas or styled HTML. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&family=Tiro+Devanagari+Hindi:ital@0;1&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f8f7f4; color: #333333; }
+        .hindi-title { font-family: 'Tiro Devanagari Hindi', serif; }
+        .chart-container { position: relative; width: 100%; max-width: 700px; margin: auto; height: 300px; max-height: 400px; }
+        @media (min-width: 768px) { .chart-container { height: 350px; } }
+        .tab { cursor: pointer; padding: 0.75rem 1.5rem; border-bottom: 3px solid transparent; transition: all 0.3s ease; }
+        .tab.active { border-bottom-color: #00796b; color: #00796b; font-weight: 700; }
+        .content-section { display: none; }
+        .content-section.active { display: block; }
+        .control-btn { background-color: #e0e0e0; color: #333; padding: 0.5rem 1rem; border-radius: 9999px; transition: background-color 0.3s ease; }
+        .control-btn.active { background-color: #00796b; color: white; }
+    </style>
+</head>
+<body class="antialiased">
+
+    <div class="container mx-auto px-4 py-8">
+        
+        <header class="text-center mb-8">
+            <h1 class="text-4xl md:text-5xl font-extrabold text-[#00796b] hindi-title">राजस्थान जनसंख्या डैशबोर्ड</h1>
+            <p class="text-lg text-gray-600 mt-2">2011 की जनगणना के आंकड़ों का एक इंटरैक्टिव अन्वेषण</p>
+        </header>
+
+        <section id="key-metrics" class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+            <div class="bg-white p-4 rounded-lg shadow-md text-center">
+                <h3 class="text-md font-semibold text-gray-500">कुल जनसंख्या</h3>
+                <p class="text-3xl font-bold text-[#d84315] mt-1">6.85 करोड़</p>
+            </div>
+            <div class="bg-white p-4 rounded-lg shadow-md text-center">
+                <h3 class="text-md font-semibold text-gray-500">जन घनत्व</h3>
+                <p class="text-3xl font-bold text-[#0288d1] mt-1">200/किमी²</p>
+            </div>
+            <div class="bg-white p-4 rounded-lg shadow-md text-center">
+                <h3 class="text-md font-semibold text-gray-500">लिंगानुपात</h3>
+                <p class="text-3xl font-bold text-[#558b2f] mt-1">928</p>
+            </div>
+            <div class="bg-white p-4 rounded-lg shadow-md text-center">
+                <h3 class="text-md font-semibold text-gray-500">साक्षरता दर</h3>
+                <p class="text-3xl font-bold text-[#f9a825] mt-1">66.1%</p>
+            </div>
+        </section>
+
+        <nav id="main-nav" class="bg-white rounded-lg shadow-md mb-8 flex flex-wrap justify-center sticky top-0 z-10">
+            <div class="tab active" onclick="showSection('distribution')">जनसंख्या वितरण</div>
+            <div class="tab" onclick="showSection('growth')">वृद्धि दर</div>
+            <div class="tab" onclick="showSection('density')">घनत्व</div>
+            <div class="tab" onclick="showSection('sex-ratio')">लिंगानुपात</div>
+            <div class="tab" onclick="showSection('literacy')">साक्षरता</div>
+            <div class="tab" onclick="showSection('social')">सामाजिक संरचना</div>
+        </nav>
+
+        <main id="main-content">
+            <section id="distribution-section" class="content-section active bg-white p-6 rounded-lg shadow-lg">
+                <h2 class="text-2xl font-bold text-[#00796b] text-center hindi-title">जनसंख्या वितरण</h2>
+                <p class="text-center text-gray-600 max-w-3xl mx-auto my-4">राजस्थान में जनसंख्या का वितरण अत्यंत असमान है। राज्य की लगभग 30% आबादी केवल 5 जिलों में केंद्रित है, जबकि पश्चिमी मरुस्थलीय जिले अत्यंत विरल आबादी वाले हैं।</p>
+                <div class="text-center my-6 space-x-2">
+                    <button id="dist-high-btn" class="control-btn active" onclick="updateDistributionChart('high')">सर्वाधिक जनसंख्या</button>
+                    <button id="dist-low-btn" class="control-btn" onclick="updateDistributionChart('low')">न्यूनतम जनसंख्या</button>
+                </div>
+                <div class="chart-container">
+                    <canvas id="distributionChart"></canvas>
+                </div>
+            </section>
+            
+            <section id="growth-section" class="content-section bg-white p-6 rounded-lg shadow-lg">
+                <h2 class="text-2xl font-bold text-[#00796b] text-center hindi-title">दशकीय वृद्धि दर (2001-2011)</h2>
+                <p class="text-center text-gray-600 max-w-3xl mx-auto my-4">2001-2011 के दशक में राजस्थान की जनसंख्या 21.3% की दर से बढ़ी, जो 17.7% के राष्ट्रीय औसत से अधिक है। ग्रामीण और शहरी क्षेत्रों की वृद्धि दरों में भी उल्लेखनीय अंतर है।</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                    <div class="text-center">
+                        <h3 class="font-semibold text-lg mb-2">ग्रामीण vs शहरी वृद्धि दर</h3>
+                        <div class="chart-container">
+                             <canvas id="growthComparisonChart"></canvas>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="text-center my-6 space-x-2">
+                            <button id="growth-high-btn" class="control-btn active" onclick="updateGrowthChart('high')">सर्वाधिक वृद्धि दर</button>
+                            <button id="growth-low-btn" class="control-btn" onclick="updateGrowthChart('low')">न्यूनतम वृद्धि दर</button>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="growthChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="density-section" class="content-section bg-white p-6 rounded-lg shadow-lg">
+                <h2 class="text-2xl font-bold text-[#00796b] text-center hindi-title">जनसंख्या घनत्व</h2>
+                <p class="text-center text-gray-600 max-w-3xl mx-auto my-4">राज्य का औसत जनसंख्या घनत्व 200 व्यक्ति प्रति वर्ग किलोमीटर है, लेकिन यह पूर्वी जिलों में 500 से अधिक और जैसलमेर जैसे पश्चिमी जिलों में 17 जितना कम है।</p>
+                <div class="text-center my-6 space-x-2">
+                    <button id="density-high-btn" class="control-btn active" onclick="updateDensityChart('high')">सर्वाधिक घनत्व</button>
+                    <button id="density-low-btn" class="control-btn" onclick="updateDensityChart('low')">न्यूनतम घनत्व</button>
+                </div>
+                <div class="chart-container">
+                    <canvas id="densityChart"></canvas>
+                </div>
+            </section>
+            
+            <section id="sex-ratio-section" class="content-section bg-white p-6 rounded-lg shadow-lg">
+                <h2 class="text-2xl font-bold text-[#00796b] text-center hindi-title">लिंगानुपात</h2>
+                <p id="sex-ratio-text" class="text-center text-gray-600 max-w-3xl mx-auto my-4">राजस्थान का औसत लिंगानुपात 928 है। ग्रामीण लिंगानुपात (933) शहरी लिंगानुपात (914) से बेहतर है। नीचे दिए गए बटनों का उपयोग करके विभिन्न डेटा देखें।</p>
+                <div class="text-center my-6 space-x-2">
+                    <button id="ratio-overall-btn" class="control-btn active" onclick="updateSexRatioView('overall')">समग्र तुलना</button>
+                    <button id="ratio-dist-btn" class="control-btn" onclick="updateSexRatioView('districts')">जिला-वार</button>
+                    <button id="ratio-child-btn" class="control-btn" onclick="updateSexRatioView('child')">शिशु लिंगानुपात</button>
+                </div>
+                <div class="chart-container">
+                    <canvas id="sexRatioChart"></canvas>
+                </div>
+            </section>
+            
+            <section id="literacy-section" class="content-section bg-white p-6 rounded-lg shadow-lg">
+                <h2 class="text-2xl font-bold text-[#00796b] text-center hindi-title">साक्षरता दर</h2>
+                <p id="literacy-text" class="text-center text-gray-600 max-w-3xl mx-auto my-4">राज्य की कुल साक्षरता 66.1% है। पुरुष (79.2%) और महिला (52.1%) साक्षरता के बीच 27.1% का एक बड़ा अंतर है, जो एक महत्वपूर्ण सामाजिक चुनौती है।</p>
+                 <div class="text-center my-6 space-x-2">
+                    <button id="lit-overall-btn" class="control-btn active" onclick="updateLiteracyView('overall')">समग्र तुलना</button>
+                    <button id="lit-dist-btn" class="control-btn" onclick="updateLiteracyView('districts')">जिला-वार</button>
+                </div>
+                <div class="chart-container">
+                    <canvas id="literacyChart"></canvas>
+                </div>
+            </section>
+            
+            <section id="social-section" class="content-section bg-white p-6 rounded-lg shadow-lg">
+                 <h2 class="text-2xl font-bold text-[#00796b] text-center hindi-title">सामाजिक संरचना</h2>
+                 <p class="text-center text-gray-600 max-w-3xl mx-auto my-4">राज्य की आबादी का 31.3% हिस्सा अनुसूचित जाति (SC) और अनुसूचित जनजाति (ST) समुदायों का है। इन समुदायों का वितरण पूरे राज्य में भिन्न-भिन्न है।</p>
+                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                    <div class="text-center">
+                        <h3 class="font-semibold text-lg mb-2">जनसंख्या संरचना (SC/ST)</h3>
+                        <div class="chart-container">
+                             <canvas id="socialCompositionChart"></canvas>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="text-center my-6 space-x-2">
+                            <button id="social-sc-btn" class="control-btn active" onclick="updateSocialChart('sc')">सर्वाधिक SC (%)</button>
+                            <button id="social-st-btn" class="control-btn" onclick="updateSocialChart('st')">सर्वाधिक ST (%)</button>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="socialDistrictChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+    </div>
+
+<script>
+    const chartInstances = {};
+    const chartColors = ['#00796b', '#f9a825', '#d84315', '#0288d1', '#558b2f', '#ff6f00'];
+    const tooltipTitleCallback = { plugins: { tooltip: { callbacks: { title: function(tooltipItems) { const item = tooltipItems[0]; let label = item.chart.data.labels[item.dataIndex]; return Array.isArray(label) ? label.join(' ') : label; } } } } };
+    const processLabels = (labels) => labels.map(label => { if (label.length <= 16) return label; const words = label.split(' '); let lines = []; let currentLine = ''; words.forEach(word => { if ((currentLine + ' ' + word).trim().length > 16) { lines.push(currentLine); currentLine = word; } else { currentLine = (currentLine + ' ' + word).trim(); } }); lines.push(currentLine); return lines; });
+
+    const data = {
+        distribution: {
+            high: { labels: ['जयपुर', 'जोधपुर', 'अलवर', 'नागौर'], values: [66.26, 36.87, 36.74, 33.07], title: 'जनसंख्या (लाख में)' },
+            low: { labels: ['जैसलमेर', 'प्रतापगढ़', 'सिरोही', 'बूँदी'], values: [6.69, 8.67, 10.36, 11.11], title: 'जनसंख्या (लाख में)' }
+        },
+        growth: {
+            comparison: { labels: ['ग्रामीण', 'शहरी', 'कुल राजस्थान', 'कुल भारत'], values: [19, 29, 21.3, 17.7] },
+            high: { labels: ['बाड़मेर', 'जैसलमेर', 'जोधपुर', 'बाँसवाड़ा'], values: [32.5, 31.8, 27.7, 26.5], title: 'वृद्धि दर (%)' },
+            low: { labels: ['गंगानगर', 'झुन्झुनूँ', 'पाली', 'बूँदी'], values: [10.0, 11.7, 11.9, 15.4], title: 'वृद्धि दर (%)' }
+        },
+        density: {
+            high: { labels: ['जयपुर', 'भरतपुर', 'दौसा', 'अलवर'], values: [595, 503, 476, 438], title: 'घनत्व (व्यक्ति/किमी²)' },
+            low: { labels: ['जैसलमेर', 'बीकानेर', 'बाड़मेर', 'चूरू'], values: [17, 78, 92, 147], title: 'घनत्व (व्यक्ति/किमी²)' }
+        },
+        sexRatio: {
+            overall: { labels: ['ग्रामीण', 'शहरी', 'कुल राजस्थान', 'कुल भारत'], values: [933, 914, 928, 943] },
+            high: { labels: ['डूंगरपुर', 'राजसमंद', 'पाली', 'प्रतापगढ़'], values: [994, 990, 987, 983] },
+            low: { labels: ['धौलपुर', 'जैसलमेर', 'करौली', 'भरतपुर'], values: [846, 852, 861, 880] },
+            child: { labels: ['2001', '2011'], values: [909, 888] }
+        },
+        literacy: {
+            overall: { labels: ['कुल', 'पुरुष', 'महिला'], values: [66.1, 79.2, 52.1] },
+            high: { labels: ['कोटा', 'जयपुर', 'झुन्झुनूं', 'सीकर'], values: [76.6, 75.5, 74.1, 71.9] },
+            low: { labels: ['जालौर', 'सिरोही', 'प्रतापगढ़', 'बांसवाड़ा'], values: [54.9, 55.3, 56.0, 56.3] }
+        },
+        social: {
+            composition: { labels: ['SC (17.83%)', 'ST (13.5%)', 'अन्य'], values: [17.83, 13.5, 68.67] },
+            sc: { labels: ['गंगानगर', 'हनुमानगढ़', 'करौली', 'चुरू'], values: [36.58, 27.85, 24.31, 22.15], title: 'SC जनसंख्या (%)' },
+            st: { labels: ['बांसवाड़ा', 'डूंगरपुर', 'प्रतापगढ़', 'उदयपुर'], values: [76.4, 70.8, 63.4, 49.7], title: 'ST जनसंख्या (%)' }
+        }
+    };
+
+    function createChart(canvasId, type, chartData, options = {}) {
+        if (chartInstances[canvasId]) {
+            chartInstances[canvasId].destroy();
+        }
+        const ctx = document.getElementById(canvasId).getContext('2d');
+        chartInstances[canvasId] = new Chart(ctx, {
+            type: type,
+            data: chartData,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                ...tooltipTitleCallback,
+                ...options
+            }
+        });
+    }
+
+    function showSection(sectionId) {
+        document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+        document.getElementById(`${sectionId}-section`).classList.add('active');
+        document.querySelectorAll('#main-nav .tab').forEach(t => t.classList.remove('active'));
+        document.querySelector(`#main-nav .tab[onclick="showSection('${sectionId}')"]`).classList.add('active');
+        window.scrollTo({ top: document.getElementById('main-nav').offsetTop, behavior: 'smooth' });
+    }
+    
+    function updateDistributionChart(mode) {
+        document.querySelectorAll('#distribution-section .control-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(`dist-${mode}-btn`).classList.add('active');
+        const chartData = {
+            labels: processLabels(data.distribution[mode].labels),
+            datasets: [{
+                label: data.distribution[mode].title,
+                data: data.distribution[mode].values,
+                backgroundColor: chartColors,
+            }]
+        };
+        createChart('distributionChart', 'bar', chartData, { indexAxis: 'y', plugins: { legend: { display: false } } });
+    }
+
+    function updateGrowthChart(mode) {
+        document.querySelectorAll('#growth-section .control-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(`growth-${mode}-btn`).classList.add('active');
+        const chartData = {
+            labels: processLabels(data.growth[mode].labels),
+            datasets: [{
+                label: data.growth[mode].title,
+                data: data.growth[mode].values,
+                backgroundColor: chartColors,
+            }]
+        };
+        createChart('growthChart', 'bar', chartData, { plugins: { legend: { display: false } } });
+    }
+
+    function updateDensityChart(mode) {
+        document.querySelectorAll('#density-section .control-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(`density-${mode}-btn`).classList.add('active');
+        const chartData = {
+            labels: processLabels(data.density[mode].labels),
+            datasets: [{
+                label: data.density[mode].title,
+                data: data.density[mode].values,
+                backgroundColor: chartColors,
+            }]
+        };
+        createChart('densityChart', 'bar', chartData, { indexAxis: 'y', plugins: { legend: { display: false } } });
+    }
+
+    let currentSexRatioDistrictMode = 'high';
+    function updateSexRatioView(view) {
+        document.querySelectorAll('#sex-ratio-section .control-btn').forEach(b => b.classList.remove('active'));
+        document.querySelector(`#ratio-${view}-btn`).classList.add('active');
+        let chartData, type = 'bar', options = { plugins: { legend: { display: false } } };
+        const textEl = document.getElementById('sex-ratio-text');
+
+        if(view === 'overall') {
+            textEl.textContent = "राजस्थान का औसत लिंगानुपात 928 है। ग्रामीण लिंगानुपात (933) शहरी लिंगानुपात (914) से बेहतर है, लेकिन दोनों ही राष्ट्रीय औसत (943) से कम हैं।";
+            chartData = { labels: processLabels(data.sexRatio.overall.labels), datasets: [{ label: 'महिलाएँ प्रति 1000 पुरुष', data: data.sexRatio.overall.values, backgroundColor: chartColors }]};
+        } else if (view === 'districts') {
+            textEl.innerHTML = `लिंगानुपात में जिला-स्तर पर भारी विषमता है। <br class="hidden md:block"> <button class="underline text-[#00796b] font-semibold" onclick="toggleSexRatioDistrict()">न्यूनतम लिंगानुपात देखने के लिए क्लिक करें</button>`;
+            const mode = currentSexRatioDistrictMode;
+            chartData = { labels: processLabels(data.sexRatio[mode].labels), datasets: [{ label: 'महिलाएँ प्रति 1000 पुरुष', data: data.sexRatio[mode].values, backgroundColor: chartColors }]};
+            options.indexAxis = 'y';
+        } else { // child
+            textEl.textContent = "सबसे चिंताजनक प्रवृत्ति शिशु लिंगानुपात (0-6 वर्ष) में है, जो 2001 में 909 से घटकर 2011 में केवल 888 रह गया है। यह 21 अंकों की एक बड़ी गिरावट है।";
+            chartData = { labels: data.sexRatio.child.labels, datasets: [{ label: 'बालिकाएँ प्रति 1000 बालक', data: data.sexRatio.child.values, backgroundColor: ['#558b2f', '#d84315'] }]};
+            options.scales = { y: { min: 880 } };
+        }
+        createChart('sexRatioChart', type, chartData, options);
+    }
+    
+    function toggleSexRatioDistrict() {
+        currentSexRatioDistrictMode = currentSexRatioDistrictMode === 'high' ? 'low' : 'high';
+        const textEl = document.getElementById('sex-ratio-text');
+        textEl.innerHTML = `लिंगानुपात में जिला-स्तर पर भारी विषमता है। <br class="hidden md:block"> <button class="underline text-[#00796b] font-semibold" onclick="toggleSexRatioDistrict()">${currentSexRatioDistrictMode === 'high' ? 'न्यूनतम' : 'सर्वाधिक'} लिंगानुपात देखने के लिए क्लिक करें</button>`;
+        const chartData = { labels: processLabels(data.sexRatio[currentSexRatioDistrictMode].labels), datasets: [{ label: 'महिलाएँ प्रति 1000 पुरुष', data: data.sexRatio[currentSexRatioDistrictMode].values, backgroundColor: chartColors }]};
+        createChart('sexRatioChart', 'bar', chartData, { indexAxis: 'y', plugins: { legend: { display: false } } });
+    }
+    
+    let currentLiteracyDistrictMode = 'high';
+    function updateLiteracyView(view) {
+        document.querySelectorAll('#literacy-section .control-btn').forEach(b => b.classList.remove('active'));
+        document.querySelector(`#lit-${view}-btn`).classList.add('active');
+        const textEl = document.getElementById('literacy-text');
+        
+        if (view === 'overall') {
+            textEl.textContent = "राज्य की कुल साक्षरता 66.1% है। पुरुष (79.2%) और महिला (52.1%) साक्षरता के बीच 27.1% का एक बड़ा अंतर है, जो एक महत्वपूर्ण सामाजिक चुनौती है।";
+            const chartData = { labels: processLabels(data.literacy.overall.labels), datasets: [{ label: 'साक्षरता दर (%)', data: data.literacy.overall.values, backgroundColor: chartColors }]};
+            createChart('literacyChart', 'bar', chartData, { plugins: { legend: { display: false } }, scales: { y: { max: 100 } }});
+        } else { // districts
+             textEl.innerHTML = `साक्षरता दर में भी जिलों के बीच काफी अंतर है, जो शैक्षिक अवसरों की असमान पहुँच को दर्शाता है। <br class="hidden md:block"> <button class="underline text-[#00796b] font-semibold" onclick="toggleLiteracyDistrict()">न्यूनतम साक्षरता देखने के लिए क्लिक करें</button>`;
+            const chartData = { labels: processLabels(data.literacy[currentLiteracyDistrictMode].labels), datasets: [{ label: 'साक्षरता दर (%)', data: data.literacy[currentLiteracyDistrictMode].values, backgroundColor: chartColors }]};
+            createChart('literacyChart', 'bar', chartData, { plugins: { legend: { display: false } } });
+        }
+    }
+    
+    function toggleLiteracyDistrict() {
+        currentLiteracyDistrictMode = currentLiteracyDistrictMode === 'high' ? 'low' : 'high';
+        document.getElementById('literacy-text').innerHTML = `साक्षरता दर में भी जिलों के बीच काफी अंतर है, जो शैक्षिक अवसरों की असमान पहुँच को दर्शाता है। <br class="hidden md:block"> <button class="underline text-[#00796b] font-semibold" onclick="toggleLiteracyDistrict()">${currentLiteracyDistrictMode === 'high' ? 'न्यूनतम' : 'सर्वाधिक'} साक्षरता देखने के लिए क्लिक करें</button>`;
+        const chartData = { labels: processLabels(data.literacy[currentLiteracyDistrictMode].labels), datasets: [{ label: 'साक्षरता दर (%)', data: data.literacy[currentLiteracyDistrictMode].values, backgroundColor: chartColors }]};
+        createChart('literacyChart', 'bar', chartData, { plugins: { legend: { display: false } } });
+    }
+    
+    function updateSocialChart(mode) {
+        document.querySelectorAll('#social-section .control-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(`social-${mode}-btn`).classList.add('active');
+        const chartData = {
+            labels: processLabels(data.social[mode].labels),
+            datasets: [{
+                label: data.social[mode].title,
+                data: data.social[mode].values,
+                backgroundColor: chartColors,
+            }]
+        };
+        createChart('socialDistrictChart', 'bar', chartData, { indexAxis: 'y', plugins: { legend: { display: false } } });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        updateDistributionChart('high');
+
+        createChart('growthComparisonChart', 'bar', {
+            labels: processLabels(data.growth.comparison.labels),
+            datasets: [{ label: 'दशकीय वृद्धि दर (%)', data: data.growth.comparison.values, backgroundColor: chartColors }]
+        }, { plugins: { legend: { display: false } }});
+        updateGrowthChart('high');
+        
+        updateDensityChart('high');
+        updateSexRatioView('overall');
+        updateLiteracyView('overall');
+        
+        createChart('socialCompositionChart', 'doughnut', {
+            labels: data.social.composition.labels,
+            datasets: [{ data: data.social.composition.values, backgroundColor: [chartColors[1], chartColors[2], '#e0e0e0'] }]
+        }, { plugins: { legend: { position: 'bottom' } }});
+        updateSocialChart('sc');
+    });
+</script>
+
+</body>
+</html>
