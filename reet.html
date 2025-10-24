@@ -1,0 +1,1443 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>तृतीय श्रेणी अध्यापक - सिलेबस प्रोग्रेस ट्रैकर (Level-II)</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Load Animate On Scroll (AOS) Library CSS -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <!-- Load Animate On Scroll (AOS) Library JS -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <!-- Load Chart.js Library for Data Visualization -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
+    <!-- Load Lucide Icons for the dropdown arrow -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Set Custom Tailwind Configuration -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary-pastel': '#4F46E5', 
+                        'soft-pink': '#FBE8FF', 
+                        'soft-blue': '#E8F7FF', 
+                        'soft-orange': '#FFF2E6', 
+                        'soft-green': '#E8FFF0', 
+                        'covered': '#10B981', /* Emerald Green for Done */
+                        'pending': '#F43F5E', /* Rose Red for Pending */
+                    },
+                    fontFamily: {
+                        sans: ['"Baloo 2"', 'Noto Sans Devanagari', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Import Baloo 2 Font for beautiful Hindi typography */
+        @import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700&display=swap');
+
+        /* Custom scroll progress bar */
+        #progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 6px;
+            background: linear-gradient(to right, #10B981, #4F46E5); /* Green-Indigo gradient */
+            z-index: 1000;
+            transition: width 0.1s;
+        }
+
+        body {
+            font-family: 'Baloo 2', sans-serif;
+            
+            /* Background Image for Aesthetic */
+            background-image: url('https://i.pinimg.com/73x/ee/c5/67/eec567acd4deed27622accde8d8785c9.jpg'); 
+            
+            background-size: cover; 
+            background-attachment: fixed; 
+            background-position: center;
+            
+            /* Overlay for Readability */
+            background-color: rgba(255, 255, 255, 0.65); 
+            background-blend-mode: overlay; 
+
+            min-height: 100vh;
+            color: #333;
+            transition: background 0.5s ease;
+        }
+
+        /* Glass Card Effect - Optimized for Aesthetic */
+        .glass-card {
+            background-color: rgba(255, 255, 255, 0.9); /* Opaque enough for content clarity */
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            will-change: transform;
+        }
+
+        /* Accordion Styles */
+        .accordion-header {
+            cursor: pointer;
+            transition: background-color 0.2s;
+            padding: 1.25rem 1.5rem; /* Increased padding */
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        .accordion-header:hover {
+            background-color: rgba(79, 70, 229, 0.05);
+        }
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-in-out, padding 0.5s ease;
+            padding-top: 0;
+            padding-bottom: 0;
+        }
+        .accordion-content.open {
+            max-height: fit-content; 
+            padding-top: 1rem;
+            padding-bottom: 1rem;
+        }
+        
+        /* CSS for hiding topics during search */
+        .topic-item.hidden-search {
+            display: none !important;
+        }
+        
+        /* CSS for forcing subject visibility during search */
+        .accordion-content.forced-open-search {
+            max-height: 2000px !important; /* Large fixed value for search display */
+            padding-top: 1rem !important;
+            padding-bottom: 1rem !important;
+            transition: none !important; /* Disable transition during search to prevent lag */
+        }
+        
+        /* Arrow icon rotation */
+        .accordion-arrow {
+            transition: transform 0.3s;
+        }
+        .accordion-arrow.rotated {
+            transform: rotate(180deg);
+        }
+        
+        /* Style for Sub-topic Headings (e.g., 'भूगोल') */
+        .sub-topic-heading {
+            font-weight: 700;
+            color: #4F46E5;
+            margin-top: 1rem;
+            margin-bottom: 0.5rem;
+            padding-left: 0.5rem;
+            border-left: 3px solid #9333EA;
+        }
+        
+        /* List style for interactive topics and checkbox */
+        .topic-item {
+            display: flex;
+            align-items: flex-start; /* Aligned to the top to support multi-line topics */
+            margin-bottom: 0.5rem;
+            line-height: 1.4; /* Better readability */
+        }
+        
+        .topic-checkbox {
+            margin-right: 0.75rem;
+            min-width: 1.25rem;
+            height: 1.25rem;
+            accent-color: #10B981; /* Green color for checkbox */
+            margin-top: 0.2rem; /* Minor vertical adjustment */
+        }
+
+        .topic-link-wrapper {
+            flex-grow: 1;
+        }
+        
+        .topic-link {
+            display: inline; 
+            padding: 0.3rem 0.5rem;
+            border-radius: 6px;
+            color: #2563EB; 
+            text-decoration: none;
+            transition: background-color 0.2s, color 0.2s;
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+        
+        .topic-link-wrapper {
+             flex-grow: 1;
+             padding-right: 0.5rem; 
+        }
+
+        .topic-link:hover {
+            background-color: #E0F2FE; 
+            color: #1D4ED8;
+            font-weight: 600;
+        }
+        
+        /* Style for completed (checked) topics */
+        .topic-covered .topic-link {
+            color: #10B981; /* Green for covered */
+            text-decoration: line-through;
+            opacity: 0.7;
+            font-weight: 400;
+        }
+
+        .topic-covered .topic-link:hover {
+            background-color: #ECFDF5; /* Lighter green background on hover */
+        }
+        
+        .topic-list {
+            list-style: none;
+            padding-left: 0;
+            margin-top: 0.5rem;
+        }
+
+        /* Summary Table Styles */
+        .summary-table th, .summary-table td {
+            padding: 0.75rem 1rem;
+        }
+        .summary-table th {
+            text-align: left;
+            background-color: #E0F2FE; /* Soft Blue/Light Blue-100 */
+            color: #1D4ED8; /* Darker Blue */
+        }
+        .summary-table tr:nth-child(even) {
+            background-color: #F8FAFC; /* Light Gray */
+        }
+        .summary-table tr:hover {
+             background-color: #F0F9FF; /* Even Lighter Blue */
+        }
+        
+        /* Styles for Search Suggestions */
+        #search-box-container {
+            margin-bottom: 2rem; 
+            z-index: 50; 
+        }
+
+        #suggestions-list {
+            background-color: white;
+            border: 1px solid #ccc;
+            border-top: none;
+            border-radius: 0 0 0.5rem 0.5rem;
+            max-height: 200px;
+            overflow-y: auto;
+            width: 100%;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        .suggestion-item {
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .suggestion-item:hover {
+            background-color: #F0F9FF;
+            color: #4F46E5;
+        }
+        .suggestion-item strong {
+            color: #4F46E5;
+        }
+        
+        /* Countdown Styles */
+        #countdown-container {
+            display: flex;
+            justify-content: space-around; 
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            padding: 0.5rem 0; 
+        }
+        
+        #countdown-top-row {
+            display: flex;
+            justify-content: space-around;
+            align-items: stretch;
+            width: 100%;
+        }
+
+        .countdown-top-item {
+            flex: 1 1 33.33%; 
+            padding: 0.25rem 0;
+            text-align: center;
+            position: relative; 
+        }
+        
+        /* Vertical separator lines */
+        .countdown-top-item:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            height: 70%;
+            border-right: 1px solid rgba(79, 70, 229, 0.3);
+        }
+
+        .countdown-value {
+            font-size: 1.5rem; 
+            font-weight: 800;
+            color: #4F46E5;
+            line-height: 1;
+        }
+        .countdown-label {
+            font-size: 0.75rem; 
+            color: #6B7280;
+            margin-top: 0.25rem;
+            font-weight: 600;
+        }
+        
+        /* Overriding style for the 'कुल दिन शेष' item to be emphasized inline */
+        #countdown-top-row .countdown-top-item:nth-child(3) .countdown-value {
+             font-size: 1.8rem; /* Largest value */
+             color: #F43F5E; /* Highlighted in Red/Pink */
+        }
+        #countdown-top-row .countdown-top-item:nth-child(3) .countdown-label {
+             font-weight: 700;
+             color: #F43F5E;
+        }
+        /* Remove the separator from the last item */
+        #countdown-top-row .countdown-top-item:nth-child(3)::after {
+            content: none;
+        }
+        
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            visibility: hidden;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .modal-overlay.visible {
+            visibility: visible;
+            opacity: 1;
+        }
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            max-width: 90%;
+            width: 500px;
+            transform: translateY(-50px);
+            transition: transform 0.3s ease-out;
+        }
+        .modal-overlay.visible .modal-content {
+            transform: translateY(0);
+        }
+
+    </style>
+</head>
+
+<body class="antialiased">
+
+    <!-- Scroll Progress Bar -->
+    <div id="progress-bar"></div>
+
+    <!-- Header Section -->
+    <header class="sticky top-0 z-50 p-4 border-b border-gray-100 rounded-b-xl backdrop-blur-sm">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <div class="text-xl font-extrabold text-primary-pastel md:text-2xl">
+                शिक्षक भर्ती लक्ष्य
+            </div>
+            <!-- New Link Management Button -->
+            <button id="open-link-manager-btn" class="flex items-center space-x-2 px-4 py-2 bg-primary-pastel text-white text-sm font-semibold rounded-lg shadow-md hover:bg-indigo-600 transition duration-300">
+                <i data-lucide="link" class="w-4 h-4"></i>
+                <span>लिंक प्रबंधित करें</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 py-8 md:py-12">
+
+        <!-- Title & Subtitle Section -->
+        <section class="text-center mb-12">
+            <h1 class="text-4xl font-extrabold text-gray-800 md:text-5xl" data-aos="fade-down" data-aos-duration="1000">
+                तृतीय श्रेणी अध्यापक — सिलेबस प्रोग्रेस ट्रैकर
+            </h1>
+            <p class="mt-3 text-lg font-medium text-gray-600 md:text-xl" data-aos="fade-down" data-aos-delay="300">
+                विषयवार अध्ययन प्रगति, अंक-वितरण एवं लिंक्स **(लेवल-II: विज्ञान-गणित)**
+            </p>
+        </section>
+        
+        <!-- Syllabus Summary and Progress Chart Section -->
+        <section class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+            
+            <!-- Left 2/3 Column: Exam Summary Table (Shifted Left, Expanded) -->
+            <div class="lg:col-span-2" data-aos="fade-left" data-aos-delay="300">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4 border-b border-gray-300 pb-2">
+                    परीक्षा सारांश
+                </h2>
+                <div class="glass-card p-0 rounded-2xl shadow-xl overflow-x-auto flex flex-col justify-between">
+                    <table class="w-full summary-table text-sm md:text-base flex-shrink-0">
+                        <thead>
+                            <tr>
+                                <th class="w-1/12 rounded-tl-2xl">क्र.</th>
+                                <th class="w-8/12">विषय/खंड</th>
+                                <th class="w-1/12 text-center">प्रश्न</th>
+                                <th class="w-2/12 text-center">अंक</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>1</td><td>राजस्थान का भौगोलिक, ऐतिहासिक और सांस्कृतिक ज्ञान</td><td class="text-center">40</td><td class="text-center font-bold">80</td></tr>
+                            <tr><td>2</td><td>संबंधित विद्यालय विषय का ज्ञान (मुख्य विषय: विज्ञान और गणित)</td><td class="text-center">60</td><td class="text-center font-bold">120</td></tr>
+                            <tr><td>3</td><td>राजस्थान का सामान्य ज्ञान, शैक्षिक परिदृश्य, RTE व सामयिक विषय</td><td class="text-center">25</td><td class="text-center font-bold">50</td></tr>
+                            <tr><td>4</td><td>शैक्षणिक रीति विज्ञान (Pedagogy)</td><td class="text-center">10</td><td class="text-center font-bold">20</td></tr>
+                            <tr><td>5</td><td>शैक्षणिक मनोविज्ञान (Educational Psychology)</td><td class="text-center">10</td><td class="text-center font-bold">20</td></tr>
+                            <tr><td>6</td><td>सूचना तकनीकी (IT)</td><td class="text-center">5</td><td class="text-center font-bold">10</td></tr>
+                            <tr class="bg-gray-200/50 font-extrabold"><td></td><td>कुल योग</td><td class="text-center">150</td><td class="text-center">300</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <!-- Ank Yojana box -->
+                <div class="mt-4 text-sm text-gray-600 bg-soft-orange p-3 rounded-xl border border-orange-300">
+                    <p class="font-bold">अंक योजना:</p> 
+                    <p>प्रत्येक सही उत्तर = 2 अंक • प्रत्येक गलत उत्तर = $-0.66$ अंक ($1/3$ अंक काटा जाएगा) • कुल समय: $2:30$ घंटे</p>
+                </div>
+            </div>
+            
+            <!-- Right 1/3 Column: Combined Widget (Countdown + Progress Chart) -->
+            <div class="lg:col-span-1" data-aos="fade-up" data-aos-delay="100">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4 border-b border-gray-300 pb-2">
+                    प्रगति डैशबोर्ड
+                </h2>
+                <!-- Combined Glass Card -->
+                <div class="glass-card p-4 rounded-2xl shadow-xl space-y-4">
+                     <!-- Countdown Timer Widget -->
+                     <div class="pb-2 border-b border-gray-200">
+                         <p class="text-xs font-semibold text-gray-600 mb-2 text-center">
+                             परीक्षा के लिए शेष समय (17 जनवरी 2026)
+                         </p>
+                         <!-- Countdown items container: All three inline, using Flex -->
+                         <div id="countdown-container" class="flex justify-around items-stretch w-full">
+                             <!-- JS will populate inner HTML -->
+                         </div>
+                     </div>
+
+                    <!-- Marks Distribution Chart -->
+                    <div class="p-2 pt-0">
+                        <p class="text-xs font-semibold text-gray-600 mb-4 text-center">
+                            अध्ययन प्रगति
+                        </p>
+                        <canvas id="progressChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Search Bar Container (Fixing Overlap) -->
+        <div id="search-box-container" class="mb-4 lg:mb-8" data-aos="fade-up" data-aos-delay="400">
+            <input type="text" id="topic-search" placeholder="खोजें — विषय, टॉपिक या English/हिंदी शब्द टाइप करें..." class="w-full px-6 py-3 rounded-t-xl shadow-lg border border-gray-300 focus:ring-primary-pastel focus:border-primary-pastel outline-none transition duration-300 font-medium text-lg" style="font-family: 'Baloo 2', sans-serif;">
+            
+            <!-- Suggestions List is now inside the container, ensuring it pushes down content -->
+             <div id="suggestions-list" class="hidden rounded-b-xl border border-gray-300 border-t-0"></div>
+        </div>
+
+
+        <!-- Detailed Syllabus Section (Accordion Style) -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold text-gray-800 mb-8 border-b-2 border-primary-pastel pb-2" data-aos="fade-right">
+                विस्तृत विषयखंड (टॉगल करें और प्रगति ट्रैक करें)
+            </h2>
+            
+            <div class="space-y-4" id="syllabus-container">
+                
+                <!-- Subject 1: राजस्थान का ज्ञान -->
+                <div id="subject-1" class="glass-card rounded-2xl shadow-xl bg-soft-pink overflow-hidden" data-aos="fade-up" data-aos-delay="100">
+                    <div class="accordion-header flex justify-between items-center p-6" data-target="content-1">
+                        <div class="flex items-center space-x-4">
+                            <h3 class="text-lg md:text-xl font-bold text-gray-900 leading-tight">
+                                1. राजस्थान का भौगोलिक, ऐतिहासिक और सांस्कृतिक ज्ञान, राजस्थानी भाषा (80 अंक)
+                            </h3>
+                        </div>
+                        <i data-lucide="chevron-down" class="accordion-arrow w-6 h-6 text-gray-600 flex-shrink-0"></i>
+                    </div>
+                    
+                    <div class="accordion-content" data-content="content-1">
+                        <div class="p-6 pt-0">
+                            <p class="sub-topic-heading">भूगोल (Geography)</p>
+                            <ul class="topic-list">
+                                <li class="topic-item" data-topic-key="geo_swaroop" data-keywords="geography, swaroop, bhaugolik"><input type="checkbox" class="topic-checkbox"><div class="topic-link-wrapper"><a href="#" class="topic-link">राजस्थान का भौगोलिक स्वरूप</a></div></li>
+                                <li class="topic-item" data-topic-key="geo_mausam" data-keywords="climate, monsoon, jalvayu, mausam"><input type="checkbox" class="topic-checkbox"><div class="topic-link-wrapper"><a href="#" class="topic-link">मानसून तंत्र एवं जलवायु</a></div></li>
+                                <li class="topic-item" data-topic-key="geo_apwah" data-keywords="drainage, rivers, dams, lake, apwah, nadi, bandh"><input type="checkbox" class="topic-checkbox"><div class="topic-link-wrapper"><a href="#" class="topic-link">अपवाह तंत्र- झीलें, नदियाँ, बांध</a></div></li>
+                                <li class="topic-item" data-topic-key="geo_van" data-keywords="forest, van sampada"><input type="checkbox" class="topic-checkbox"><div class="topic-link-wrapper"><a href="#" class="topic-link">राजस्थान की वन-संपदा</a></div></li>
+                                <li class="topic-item" data-topic-key="geo_vanya" data-keywords="wildlife, sanctuary, vanya jeev, abhyaranya, sanrakshan"><input type="checkbox" class="topic-checkbox"><div class="topic-link-wrapper"><a href="#" class="topic-link">वन्य जीव-जन्तु, वन्य जीव संरक्षण एवं अभयारण्य</a></div></li>
+                                <li class="topic-item" data-topic-key="geo_mrida" data-keywords="soil, erosion, mrida, sanrakshan, mitti"><input type="checkbox" class="topic-checkbox"><div class="topic-link-wrapper"><a href="#" class="topic-link">मृदाएँ एवं मृदा संरक्षण</a></div></li>
+                                <li class="topic-item" data-topic-key="geo_fasal" data-keywords="crops, fasal, kheti"><input type="checkbox" class="topic-checkbox"><div class="topic-link-wrapper"><a href="#" class="topic-link">राजस्थान की प्रमुख फसलें</a></div></li>
+                                <li class="topic-item" data-topic-key="geo_jan" data-keywords="population, density, literacy, sex ratio, jansankhya, linganupat"><input type="checkbox" class="topic-checkbox"><div class="topic-link-wrapper"><a href="#" class="topic-link">जनसंख्या, जनसंख्या घनत्व, साक्षरता और लिंगानुपात</a></div></li>
+                                <li class="topic-item" data-topic-key="geo_tribe" data-keywords="tribes, janjaati, kshetra"><input type="checkbox" class="topic-checkbox"><div class="topic-link-wrapper"><a href="#" class="topic-link">राजस्थान की जनजातियाँ एवं जनजातीय क्षेत्र</a></div></li>
+                                <li class="topic-item" data-topic-key="geo_minerals" data-keywords="minerals, metallic, adhatvik, khanij, dhatu"><input type="checkbox" class="topic-checkbox"><div class="topic-link-wrapper"><a href="#" class="topic-link">धात्विक एवं अधात्विक खनिज</a></div></li>
+                                <li class="topic-item" data-topic-key="geo_energy" data-keywords="energy, urja, parampart, gair"><input type="checkbox" class="topic-checkbox"><div class="topic-link-wrapper"><a href="#" class="topic-link">राजस्थान के ऊर्जा संसाधनः परम्परागत एवं गैर-परम्परागत</a></div></li>
+                                <li class="topic-item" data-topic-key="geo_paryatan" data-keywords="tourism, paryatan, sthal"><input type="checkbox" class="topic-checkbox"><div class="topic-link-wrapper"><a href="#" class="topic-link">राजस्थान के पर्यटन स्थल</a></div></li>
+                                <li class="topic-item" data-topic-key="geo_yatyat" data-keywords="transport, yataayat, sadhan"><input type="checkbox" class="topic-checkbox"><div class="topic-link-wrapper"><a href="#" class="topic-link">राजस्थान में यातायात के साधन</a></div></li>
+                            </ul>
+                            
+                            <p class="sub-topic-heading">इतिहास एवं संस्कृति (History and Culture)</p>
+                            <ul class="topic-list">
+                                <li class="topic-item" data-topic-key="hist_civil" data-keywords="civilization, sabhyata, aahad, kalibanga, history, itihas"><input type="checkbox" class="topic-checkbox"><div class="topic-link-wrapper"><a href="#" class="topic-link">राजस्थान की प्राचीन सभ्यताएँ: कालीबंगा, आहड़, गणेश्वर, बालाथल और बैराठ इत्यादि ।</a></div></li>
+                                <li class="topic-item" data-topic-key="hist_dynasty" data-keywords="dynasty, administration, rajasva, rajvansh, prashasanik"><input type="checkbox" class="topic-checkbox"><div class="topic-link-wrapper"><a href="#" class="topic-link">राजस्थान की महत्वपूर्ण ऐतिहासिक घटनाएँ, प्रमुख राजवंश, उनकी प्रशासनिक व राजस्व व्यवस्था इत्यादि ।</a></div></li>
+                                <li class="topic-item" data-topic-key="art_sthapatya" data-keywords="architecture, fort, havelis, sthapatya kala, kile, baori"><input type="checkbox" class="topic-checkbox"><div class="topic-link-wrapper"><a href="#" class="topic-link">राजस्थान की स्थापत्य कलाः किले, स्मारक इत्यादि ।</a></div></li>
+                                <li class="topic-item" data-topic-key="art_fair" data-keywords="fairs, festivals, folk art, lok sangeet, mele, tyohar, nritya"><input type="checkbox" class="topic-checkbox"><div class="topic-link-wrapper"><a href="#" class="topic-link">राजस्थान के मेले, त्योहार, लोक कला, लोक संगीत, लोक नाट्य एवं लोक नृत्य</a></div></li>
+                                <li class="topic-item" data-topic-key="art_virasat" data-keywords="religious, dharmik, sanskritik, virasat"><input type="checkbox" class="topic-checkbox"><div class="topic-link-wrapper"><a href="#" class="topic-link">राजस्थान की सांस्कृतिक परम्परा एवं विरासत</a></div></li>
+                                <li class="topic-item" data-topic-key="art_saint" data-keywords="saints, deities, lok devta, sant"><input type="checkbox" class="topic-checkbox"><div class="topic-link-wrapper"><a href="#" class="topic-link">राजस्थान के धार्मिक आंदोलन, प्रमुख संत एवं लोक देवता</a></div></li>
+                                <li class="topic-item" data-topic-key="hist_sthal" data-keywords="historical, aaitihasik, sthal"><input type="checkbox" class="topic-checkbox"><div class="topic-link-wrapper"><a href="#" class="topic-link">राजस्थान के महत्वपूर्ण ऐतिहासिक स्थल</a></div></li>
+                                <li class="topic-item" data-topic-key="art_vyaktitva" data-keywords="personalities, pramukh vyakti"><input type="checkbox" class="topic-checkbox"><div class="topic-link-wrapper"><a href="#" class="topic-link">राजस्थान के प्रमुख व्यक्तित्व</a></div></li>
+                                <li class="topic-item" data-topic-key="art_vastra" data-keywords="jewelry, vastra, aabhushan, clothes"><input type="checkbox" class="topic-checkbox"><div class="topic-link-wrapper"><a href="#" class="topic-link">राजस्थान के वस्त्र एवं आभूषण</a></div></li>
+                                <li class="topic-item" data-topic-key="art_chitra" data-keywords="paintings, chitra, hastshilp"><input type="checkbox" class="topic-checkbox"><div class="topic-link-wrapper"><a href="#" class="topic-link">राजस्थान की चित्रकलाएँ एवं हस्तशिल्प</a></div></li>
+                                <li class="topic-item" data-topic-key="hist_andolan" data-keywords="1857 revolt, kisan andolan, janjaati, kranti"><input type="checkbox" class="topic-checkbox"><div class="topic-link-wrapper"><a href="#" class="topic-link">1857 की क्रांति में राजस्थान का योगदान, राजस्थान में जनजाति एवं किसान आंदोलन</a></div></li>
+                                <li class="topic-item" data-topic-key="hist_ekikaran" data-keywords="prajamandal, ekikaran, unifiaction"><input type="checkbox" class="topic-checkbox"><div class="topic-link-wrapper"><a href="#" class="topic-link">प्रजामण्डल एवं राजस्थान का एकीकरण</a></div></li>
+                            </ul>
+                            
+                            <p class="sub-topic-heading">राजस्थानी भाषा (Rajasthani Language)</p>
+                            <ul class="topic-list">
+                                <li class="topic-item" data-topic-key="lang_boli" data-keywords="regional, dialects, boliyan, bhasha"><input type="checkbox" class="topic-checkbox"><div class="topic-link-wrapper"><a href="#" class="topic-link">राजस्थान की क्षेत्रीय बोलियाँ</a></div></li>
+                                <li class="topic-item" data-topic-key="lang_kritya" data-keywords="krityan, rachna, writings"><input type="checkbox" class="topic-checkbox"><div class="topic-link-wrapper"><a href="#" class="topic-link">प्रमुख राजस्थानी कृतियाँ</a></div></li>
+                                <li class="topic-item" data-topic-key="lang_sahityakar" data-keywords="literature, writers, lekhak, sahityakar"><input type="checkbox" class="topic-checkbox"><div class="topic-link-wrapper"><a href="#" class="topic-link">प्रमुख राजस्थानी साहित्यकार</a></div></li>
+                                <li class="topic-item" data-topic-key="lang_sant" data-keywords="sant sahitya, lok sahitya"><input type="checkbox" class="topic-checkbox"><div class="topic-link-wrapper"><a href="#" class="topic-link">राजस्थानी संत साहित्य एवं लोक साहित्य</a></div></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Subject 2: संबंधित विद्यालय विषय (Science & Math) -->
+                <div id="subject-2" class="glass-card rounded-2xl shadow-xl bg-soft-blue overflow-hidden" data-aos="fade-up" data-aos-delay="200">
+                    <div class="accordion-header flex justify-between items-center p-6" data-target="content-2">
+                        <div class="flex items-center space-x-4">
+                            <h3 class="text-lg md:text-xl font-bold text-gray-900 leading-tight">
+                                2. संबंधित विद्यालय विषय का ज्ञान (गणित और विज्ञान) (120 अंक)
+                            </h3>
+                        </div>
+                        <i data-lucide="chevron-down" class="accordion-arrow w-6 h-6 text-gray-600 flex-shrink-0"></i>
+                    </div>
+                    
+                    <div class="accordion-content" data-content="content-2">
+                         <div class="p-6 pt-0">
+                            <p class="sub-topic-heading">गणित (Mathematics)</p>
+                            <ul class="topic-list">
+                                <li class="topic-item" data-topic-key="math_numbers" data-keywords="math, numbers, poorna, abhajya, bhajya, sankhya"><input type="checkbox" class="topic-checkbox"><div class="topic-link-wrapper"><a href="#" class="topic-link">पूर्ण संख्याएँ, अभाज्य और भाज्य संख्याएँ</a></div></li>
+                                <li class="topic-item" data-topic-key="math_fraction" data-keywords="math, fraction, decimal, bhinn, dashamlav"><input type="checkbox" class="topic-checkbox"><div class="topic-link-wrapper"><a href="#" class="topic-link">भिन्न की अवधारणा एवं दशमलव संख्याएँ</a></div></li>
+                                <li class="topic-item" data-topic-key="math_sankriya" data-keywords="math, operation, jod, baki, guna, bhag, sankarayan"><input type="checkbox" class="topic-checkbox"><div class="topic-link-wrapper"><a href="#" class="topic-link">गणितीय मूल संक्रियाएँ – जोड़, बाकी, गुणा, भाग</a></div></li>
+                                <li class="topic-item" data-topic-key="math_lcmhcf" data-keywords="math, factor, hcf, lcm, gunan khand, samapvartya"><input type="checkbox" class="topic-checkbox"><div class="topic-link-wrapper"><a href="#" class="topic-link">अभाज्य गुणनखण्ड, लघुत्तम समापवर्त्य एवं महत्तम समापवर्तक</a></div></li>
+                                <li class="topic-item" data-topic-key="math_commercial" data-keywords="math, percent, interest, profit, loss, pratishat, byaj, labh"><input type="checkbox" class="topic-checkbox"><div class="topic-link-wrapper"><a href="#" class="topic-link">प्रतिशत, लाभ-हानि, सरल ब्याज, चक्रवृद्धि ब्याज</a></div></li>
+                                <li class="topic-item" data-topic-key="math_geometry" data-keywords="math, line, angle, rekha, kon, samataliya"><input type="checkbox" class="topic-checkbox"><div class="topic-link-wrapper"><a href="#" class="topic-link">रेखा एवं कोण</a></div></li>
+                                <li class="topic-item" data-topic-key="math_area" data-keywords="math, area, perimeter, kshetraphal, parimap"><input type="checkbox" class="topic-checkbox"><div class="topic-link-wrapper"><a href="#" class="topic-link">समतलीय आकृतियों के परिमाप एवं क्षेत्रफल</a></div></li>
+                                <li class="topic-item" data-topic-key="math_volume" data-keywords="math, volume, surface, aaytan, ghana, belan, shanku, goley"><input type="checkbox" class="topic-checkbox"><div class="topic-link-wrapper"><a href="#" class="topic-link">ठोस आकृतियों (घन, घनाभ, बेलन, शंकु, गोले) का पृष्ठीय क्षेत्रफल एवं आयतन</a></div></li>
+                            </ul>
+                            
+                            <p class="sub-topic-heading">सामान्य विज्ञान (Science)</p>
+                            <ul class="topic-list">
+                                <li class="topic-item" data-topic-key="sci_chem_acid" data-keywords="science, acid, base, salt, aml, kshar, lavan, rasayan"><input type="checkbox" class="topic-checkbox"><div class="topic-link-wrapper"><a href="#" class="topic-link">अम्ल, क्षारक और लवण</a></div></li>
+                                <li class="topic-item" data-topic-key="sci_chem_matter" data-keywords="science, element, compound, mixture, tatva, yogik, mishran"><input type="checkbox" class="topic-checkbox"><div class="topic-link-wrapper"><a href="#" class="topic-link">तत्व, यौगिक एवं मिश्रण</a></div></li>
+                                <li class="topic-item" data-topic-key="sci_chem_change" data-keywords="science, physical, chemical, bhautik, rasayanik, parivartan"><input type="checkbox" class="topic-checkbox"><div class="topic-link-wrapper"><a href="#" class="topic-link">भौतिक एवं रासायनिक परिवर्तन</a></div></li>
+                                <li class="topic-item" data-topic-key="sci_phy_motion" data-keywords="science, motion, gati, bal, niyam"><input type="checkbox" class="topic-checkbox"><div class="topic-link-wrapper"><a href="#" class="topic-link">गति</a></div></li>
+                                <li class="topic-item" data-topic-key="sci_phy_force" data-keywords="science, force, bal, gati ke niyam"><input type="checkbox" class="topic-checkbox"><div class="topic-link-wrapper"><a href="#" class="topic-link">बल तथा गति के नियम</a></div></li>
+                                <li class="topic-item" data-topic-key="sci_phy_light" data-keywords="science, light, prakash, chhaya"><input type="checkbox" class="topic-checkbox"><div class="topic-link-wrapper"><a href="#" class="topic-link">प्रकाश</a></div></li>
+                                <li class="topic-item" data-topic-key="sci_bio_cell" data-keywords="science, cell, koshika, sanrachana, prakarya"><input type="checkbox" class="topic-checkbox"><div class="topic-link-wrapper"><a href="#" class="topic-link">कोशिकाः संरचना एवं प्रकार्य</a></div></li>
+                                <li class="topic-item" data-topic-key="sci_bio_process" data-keywords="science, life process, shwasan, parivahan, jeev"><input type="checkbox" class="topic-checkbox"><div class="topic-link-wrapper"><a href="#" class="topic-link">जीवों में श्वसन एवं परिवहन</a></div></li>
+                                <li class="topic-item" data-topic-key="sci_bio_repro" data-keywords="science, reproduction, janan, jantu"><input type="checkbox" class="topic-checkbox"><div class="topic-link-wrapper"><a href="#" class="topic-link">जन्तुओं में जनन</a></div></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Subject 3: सामान्य ज्ञान, शैक्षिक परिदृश्य, RTE -->
+                <div id="subject-3" class="glass-card rounded-2xl shadow-xl bg-soft-orange overflow-hidden" data-aos="fade-up" data-aos-delay="300">
+                    <div class="accordion-header flex justify-between items-center p-6" data-target="content-3">
+                        <div class="flex items-center space-x-4">
+                             <h3 class="text-lg md:text-xl font-bold text-gray-900 leading-tight">
+                                3. राजस्थान का सामान्य ज्ञान, शैक्षिक परिदृश्य, RTE व सामयिक विषय (50 अंक)
+                            </h3>
+                        </div>
+                        <i data-lucide="chevron-down" class="accordion-arrow w-6 h-6 text-gray-600 flex-shrink-0"></i>
+                    </div>
+
+                    <div class="accordion-content" data-content="content-3">
+                        <div class="p-6 pt-0">
+                            <p class="sub-topic-heading">राजस्थान का सामान्य ज्ञान</p>
+                            <ul class="topic-list">
+                                <li class="topic-item" data-topic-key="gk_symbol" data-keywords="gk, symbols, prateek chihna, general knowledge"><input type="checkbox" class="topic-checkbox"><div class="topic-link-wrapper"><a href="#" class="topic-link">राजस्थान के प्रतीक चिह्न</a></div></li>
+                                <li class="topic-item" data-topic-key="gk_flagship" data-keywords="gk, flagship, schemes, yojanaayein, sarakari yojna"><input type="checkbox" class="topic-checkbox"><div class="topic-link-wrapper"><a href="#" class="topic-link">राजस्थान में राज्य सरकार की फ्लैगशिप योजनाएँ</a></div></li>
+                                <li class="topic-item" data-topic-key="gk_research" data-keywords="gk, research, centres, anushandhan, kendra"><input type="checkbox" class="topic-checkbox"><div class="topic-link-wrapper"><a href="#" class="topic-link">राजस्थान के प्रमुख अनुसंधान केन्द्र</a></div></li>
+                                <li class="topic-item" data-topic-key="gk_religious" data-keywords="gk, religious, sites, dharmik, sthal, mandir"><input type="checkbox" class="topic-checkbox"><div class="topic-link-wrapper"><a href="#" class="topic-link">राजस्थान के प्रमुख धार्मिक स्थल</a></div></li>
+                                <li class="topic-item" data-topic-key="gk_player" data-keywords="gk, players, khiladi"><input type="checkbox" class="topic-checkbox"><div class="topic-link-wrapper"><a href="#" class="topic-link">राजस्थान के प्रमुख खिलाड़ी</a></div></li>
+                                <li class="topic-item" data-topic-key="gk_city" data-keywords="gk, city, nagar, sthal, famous, prasiddh"><input type="checkbox" class="topic-checkbox"><div class="topic-link-wrapper"><a href="#" class="topic-link">राजस्थान के प्रसिद्ध नगर एवं स्थल इत्यादि।</a></div></li>
+                                <li class="topic-item" data-topic-key="gk_industry" data-keywords="gk, industries, udyog, factory"><input type="checkbox" class="topic-checkbox"><div class="topic-link-wrapper"><a href="#" class="topic-link">राजस्थान के प्रमुख उद्योग ।</a></div></li>
+                                <li class="topic-item" data-topic-key="gk_admin" data-keywords="gk, politics, administration, prashasanik, rajnitik"><input type="checkbox" class="topic-checkbox"><div class="topic-link-wrapper"><a href="#" class="topic-link">राजस्थान की राजनीतिक एवं प्रशासनिक व्यवस्था</a></div></li>
+                                <li class="topic-item" data-topic-key="gk_kalyan" data-keywords="gk, welfare, jan kalyankari, yojanaayein"><input type="checkbox" class="topic-checkbox"><div class="topic-link-wrapper"><a href="#" class="topic-link">राजस्थान में जन कल्याणकारी योजनाएँ ।</a></div></li>
+                            </ul>
+                            
+                            <p class="sub-topic-heading">शैक्षिक परिदृश्य</p>
+                            <ul class="topic-list">
+                                <li class="topic-item" data-topic-key="edu_inno" data-keywords="shikshik, education, innovation, nawachar, shikshan"><input type="checkbox" class="topic-checkbox"><div class="topic-link-wrapper"><a href="#" class="topic-link">शिक्षण अधिगम के नवाचार ।</a></div></li>
+                                <li class="topic-item" data-topic-key="edu_kalyan" data-keywords="shikshik, welfare, schemes, awards, yojanaayein, puraskar"><input type="checkbox" class="topic-checkbox"><div class="topic-link-wrapper"><a href="#" class="topic-link">राज्य में केन्द्र एवं राजस्थान सरकार की विद्यार्थी कल्याणकारी योजनाएँ एवं पुरस्कार।</a></div></li>
+                                <li class="topic-item" data-topic-key="edu_manage" data-keywords="shikshik, school, management, samitiyan, prabandhan"><input type="checkbox" class="topic-checkbox"><div class="topic-link-wrapper"><a href="#" class="topic-link">विद्यालय प्रबंधन एवं संबंधित समितियाँ ।</a></div></li>
+                                <li class="topic-item" data-topic-key="edu_nep" data-keywords="shikshik, NEP 2020, shiksha niti"><input type="checkbox" class="topic-checkbox"><div class="topic-link-wrapper"><a href="#" class="topic-link">राष्ट्रीय शिक्षा नीति, 2020 राजस्थान के परिप्रेक्ष्य में।</a></div></li>
+                            </ul>
+                            
+                            <p class="sub-topic-heading">निःशुल्क एवं अनिवार्य बाल शिक्षा का अधिकार अधिनियम (RTE)</p>
+                            <ul class="topic-list">
+                                <li class="topic-item" data-topic-key="rte_2009" data-keywords="rte, right to education, 2009, provision, kriyaanviti"><input type="checkbox" class="topic-checkbox"><div class="topic-link-wrapper"><a href="#" class="topic-link">निःशुल्क एवं अनिवार्य बाल शिक्षा का अधिकार अधिनियम, 2009 : प्रावधान एवं क्रियान्विति</a></div></li>
+                                <li class="topic-item" data-topic-key="rte_2011_rule" data-keywords="rte, 2011, niyam, rule"><input type="checkbox" class="topic-checkbox"><div class="topic-link-wrapper"><a href="#" class="topic-link">राजस्थान निःशुल्क एवं अनिवार्य बाल शिक्षा का अधिकार नियम, 2011</a></div></li>
+                                <li class="topic-item" data-topic-key="rte_2011_pvt" data-keywords="rte, private school, free admission, nishulk pravesh"><input type="checkbox" class="topic-checkbox"><div class="topic-link-wrapper"><a href="#" class="topic-link">राजस्थान के मान्यता प्राप्त निजी विद्यालयों में निःशुल्क प्रवेश।</a></div></li>
+                            </ul>
+
+                            <p class="sub-topic-heading">सामयिक विषय (Current Affairs)</p>
+                            <ul class="topic-list">
+                                <li class="topic-item" data-topic-key="current_events" data-keywords="current affairs, sam-samayik, ghatnaayein, news, gk"><input type="checkbox" class="topic-checkbox"><div class="topic-link-wrapper"><a href="#" class="topic-link">राजस्थान की सम-सामयिक घटनाएँ।</a></div></li>
+                                <li class="topic-item" data-topic-key="current_dev" data-keywords="current affairs, vikas yojanaayein, abhinav, development"><input type="checkbox" class="topic-checkbox"><div class="topic-link-wrapper"><a href="#" class="topic-link">राज्य की अभिनव विकास योजनाएँ एवं क्रियान्विति</a></div></li>
+                                <li class="topic-item" data-topic-key="current_other" data-keywords="current affairs, other, anya vishay"><input type="checkbox" class="topic-checkbox"><div class="topic-link-wrapper"><a href="#" class="topic-link">अन्य सम-सामयिक विषय।</a></div></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Subject 4: शैक्षणिक रीति विज्ञान (Pedagogy) -->
+                <div id="subject-4" class="glass-card rounded-2xl shadow-xl bg-soft-green overflow-hidden" data-aos="fade-up" data-aos-delay="400">
+                    <div class="accordion-header flex justify-between items-center p-6" data-target="content-4">
+                        <div class="flex items-center space-x-4">
+                            <h3 class="text-lg md:text-xl font-bold text-gray-900 leading-tight">
+                                4. शैक्षणिक रीति विज्ञान (Pedagogy) (20 अंक)
+                            </h3>
+                        </div>
+                        <i data-lucide="chevron-down" class="accordion-arrow w-6 h-6 text-gray-600 flex-shrink-0"></i>
+                    </div>
+
+                    <div class="accordion-content" data-content="content-4">
+                        <div class="p-6 pt-0">
+                            <p class="sub-topic-heading">गणित (Mathematics)</p>
+                            <ul class="topic-list">
+                                <li class="topic-item" data-topic-key="ped_math_methods" data-keywords="pedagogy, math, teaching methods, reeti vigyan, shikshan vidhiyan"><input type="checkbox" class="topic-checkbox"><div class="topic-link-wrapper"><a href="#" class="topic-link">गणित विषय की शिक्षण विधियाँ</a></div></li>
+                                <li class="topic-item" data-topic-key="ped_math_approach" data-keywords="pedagogy, math, approach, upaagam, shikshan"><input type="checkbox" class="topic-checkbox"><div class="topic-link-wrapper"><a href="#" class="topic-link">गणित शिक्षण के उपागम</a></div></li>
+                                <li class="topic-item" data-topic-key="ped_math_challenge" data-keywords="pedagogy, math, challenges, chunautiyan"><input type="checkbox" class="topic-checkbox"><div class="topic-link-wrapper"><a href="#" class="topic-link">गणित शिक्षण में चुनौतियाँ</a></div></li>
+                                <li class="topic-item" data-topic-key="ped_math_material" data-keywords="pedagogy, math, material, sahayak samagri, utilization"><input type="checkbox" class="topic-checkbox"><div class="topic-link-wrapper"><a href="#" class="topic-link">गणित शिक्षण सहायक सामग्री एवं उपयोग</a></div></li>
+                                <li class="topic-item" data-topic-key="ped_math_eval" data-keywords="pedagogy, math, evaluation, mulyankan, methods"><input type="checkbox" class="topic-checkbox"><div class="topic-link-wrapper"><a href="#" class="topic-link">गणित शिक्षण की मूल्यांकन विधियाँ</a></div></li>
+                                <li class="topic-item" data-topic-key="ped_math_remedial" data-keywords="pedagogy, math, remedial, upcharatmak, nidanatmak"><input type="checkbox" class="topic-checkbox"><div class="topic-link-wrapper"><a href="#" class="topic-link">निदानात्मक एवं उपचारात्मक शिक्षण</a></div></li>
+                            </ul>
+                            
+                            <p class="sub-topic-heading">सामान्य विज्ञान (General Science)</p>
+                            <ul class="topic-list">
+                                <li class="topic-item" data-topic-key="ped_sci_methods" data-keywords="pedagogy, science, vigyan, teaching methods, shikshan vidhiyan"><input type="checkbox" class="topic-checkbox"><div class="topic-link-wrapper"><a href="#" class="topic-link">विज्ञान की शिक्षण विधियाँ</a></div></li>
+                                <li class="topic-item" data-topic-key="ped_sci_approach" data-keywords="pedagogy, science, upaagam, approach"><input type="checkbox" class="topic-checkbox"><div class="topic-link-wrapper"><a href="#" class="topic-link">विज्ञान शिक्षण के उपागम</a></div></li>
+                                <li class="topic-item" data-topic-key="ped_sci_material" data-keywords="pedagogy, science, sahayak samagri, utilization"><input type="checkbox" class="topic-checkbox"><div class="topic-link-wrapper"><a href="#" class="topic-link">विज्ञान शिक्षण सहायक सामग्री एवं उपयोग</a></div></li>
+                                <li class="topic-item" data-topic-key="ped_sci_eval" data-keywords="pedagogy, science, mulyankan, evaluation, methods"><input type="checkbox" class="topic-checkbox"><div class="topic-link-wrapper"><a href="#" class="topic-link">विज्ञान शिक्षण की मूल्यांकन विधियाँ</a></div></li>
+                                <li class="topic-item" data-topic-key="ped_sci_remedial" data-keywords="pedagogy, science, remedial, upcharatmak, nidanatmak"><input type="checkbox" class="topic-checkbox"><div class="topic-link-wrapper"><a href="#" class="topic-link">निदानात्मक एवं उपचारात्मक शिक्षण</a></div></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Subject 5: शैक्षणिक मनोविज्ञान (Educational Psychology) -->
+                <div id="subject-5" class="glass-card rounded-2xl shadow-xl bg-soft-pink overflow-hidden" data-aos="fade-up" data-aos-delay="500">
+                    <div class="accordion-header flex justify-between items-center p-6" data-target="content-5">
+                        <div class="flex items-center space-x-4">
+                            <h3 class="text-lg md:text-xl font-bold text-gray-900 leading-tight">
+                                5. शैक्षणिक मनोविज्ञान (Educational Psychology) (20 अंक)
+                            </h3>
+                        </div>
+                        <i data-lucide="chevron-down" class="accordion-arrow w-6 h-6 text-gray-600 flex-shrink-0"></i>
+                    </div>
+                    
+                    <div class="accordion-content" data-content="content-5">
+                        <div class="p-6 pt-0">
+                            <p class="sub-topic-heading">शैक्षणिक मनोविज्ञान</p>
+                            <ul class="topic-list">
+                                <li class="topic-item" data-topic-key="psy_intro" data-keywords="psychology, manovigyan, arth, kshetra, karya, introduction"><input type="checkbox" class="topic-checkbox"><div class="topic-link-wrapper"><a href="#" class="topic-link">शैक्षिक मनोविज्ञान : अर्थ, क्षेत्र एवं कार्य</a></div></li>
+                                <li class="topic-item" data-topic-key="psy_child_dev_1" data-keywords="psychology, child development, baal vikas, siddhant, theory"><input type="checkbox" class="topic-checkbox"><div class="topic-link-wrapper"><a href="#" class="topic-link">बाल विकास : अर्थ, बाल विकास के सिद्धान्त एवं विकास को प्रभावित करने वाले कारक</a></div></li>
+                                <li class="topic-item" data-topic-key="psy_child_dev_2" data-keywords="psychology, vanshanukram, vatavaran, heredity, environment"><input type="checkbox" class="topic-checkbox"><div class="topic-link-wrapper"><a href="#" class="topic-link">बाल विकास में वंशानुक्रम एवं वातावरण का प्रभाव</a></div></li>
+                                <li class="topic-item" data-topic-key="psy_personality_1" data-keywords="psychology, personality, vyaktitv, sankalpana, prakar"><input type="checkbox" class="topic-checkbox"><div class="topic-link-wrapper"><a href="#" class="topic-link">व्यक्तित्व : संकल्पना, प्रकार, व्यक्तित्व को प्रभावित करने वाले कारक और व्यक्तित्व मापन</a></div></li>
+                                <li class="topic-item" data-topic-key="psy_intel" data-keywords="psychology, intelligence, buddhi, siddhant, maapan"><input type="checkbox" class="topic-checkbox"><div class="topic-link-wrapper"><a href="#" class="topic-link">बुद्धि : संकल्पना, विभिन्न बुद्धि सिद्धान्त एवं मापन</a></div></li>
+                                <li class="topic-item" data-topic-key="psy_learning_1" data-keywords="psychology, learning, adhigam, arth, karak, factors"><input type="checkbox" class="topic-checkbox"><div class="topic-link-wrapper"><a href="#" class="topic-link">अधिगम का अर्थ एवं अधिगम को प्रभावित करने वाले कारक</a></div></li>
+                                <li class="topic-item" data-topic-key="psy_learning_2" data-keywords="psychology, learning, theories, adhigam, siddhant"><input type="checkbox" class="topic-checkbox"><div class="topic-link-wrapper"><a href="#" class="topic-link">अधिगम के विभिन्न सिद्धान्त</a></div></li>
+                                <li class="topic-item" data-topic-key="psy_learning_3" data-keywords="psychology, learning, processes, adhigam, prakriya"><input type="checkbox" class="topic-checkbox"><div class="topic-link-wrapper"><a href="#" class="topic-link">अधिगम की विभिन्न प्रक्रियाएँ</a></div></li>
+                                <li class="topic-item" data-topic-key="psy_special" data-keywords="psychology, special learner, pratibhashali, vishesh avashyakta, pichade, srijansheel"><input type="checkbox" class="topic-checkbox"><div class="topic-link-wrapper"><a href="#" class="topic-link">विविध अधिगमकर्ता के प्रकार : पिछड़े, विमंदित, प्रतिभाशाली, सर्जनशील, विशेष आवश्यकता वाले विद्यार्थी इत्यादि ।</a></div></li>
+                                <li class="topic-item" data-topic-key="psy_difficulty" data-keywords="psychology, difficulties, kathinaiyan, adhigam"><input type="checkbox" class="topic-checkbox"><div class="topic-link-wrapper"><a href="#" class="topic-link">अधिगम में आने वाली कठिनाइयाँ</a></div></li>
+                                <li class="topic-item" data-topic-key="psy_motivate" data-keywords="psychology, motivation, abhiprerna, prabhav, effect"><input type="checkbox" class="topic-checkbox"><div class="topic-link-wrapper"><a href="#" class="topic-link">अभिप्रेरणा एवं अधिगम में इसका प्रभाव</a></div></li>
+                                <li class="topic-item" data-topic-key="psy_adjust" data-keywords="psychology, adjustment, samayojan, teacher role, adhyapak ki bhumika"><input type="checkbox" class="topic-checkbox"><div class="topic-link-wrapper"><a href="#" class="topic-link">समायोजन की संकल्पना, तरीकें एवं समायोजन में अध्यापक की भूमिका</a></div></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Subject 6: सूचना तकनीकी (IT) -->
+                <div id="subject-6" class="glass-card rounded-2xl shadow-xl bg-soft-blue overflow-hidden" data-aos="fade-up" data-aos-delay="600">
+                    <div class="accordion-header flex justify-between items-center p-6" data-target="content-6">
+                        <div class="flex items-center space-x-4">
+                            <h3 class="text-lg md:text-xl font-bold text-gray-900 leading-tight">
+                                6. सूचना तकनीकी (Information Technology - IT) (10 अंक)
+                            </h3>
+                        </div>
+                        <i data-lucide="chevron-down" class="accordion-arrow w-6 h-6 text-gray-600 flex-shrink-0"></i>
+                    </div>
+
+                    <div class="accordion-content" data-content="content-6">
+                        <div class="p-6 pt-0">
+                            <p class="sub-topic-heading">सूचना प्रौद्योगिकी</p>
+                            <ul class="topic-list">
+                                <li class="topic-item" data-topic-key="it_basis" data-keywords="IT, information technology, soochana, aadhar, basics"><input type="checkbox" class="topic-checkbox"><div class="topic-link-wrapper"><a href="#" class="topic-link">सूचना प्रौद्योगिकी के आधार</a></div></li>
+                                <li class="topic-item" data-topic-key="it_tools" data-keywords="IT, tools, upkaran, saadhan"><input type="checkbox" class="topic-checkbox"><div class="topic-link-wrapper"><a href="#" class="topic-link">सूचना प्रौद्योगिकी उपकरण (टूल्स)</a></div></li>
+                                <li class="topic-item" data-topic-key="it_app" data-keywords="IT, application, anuprayog, use"><input type="checkbox" class="topic-checkbox"><div class="topic-link-wrapper"><a href="#" class="topic-link">सूचना प्रौद्योगिकी के अनुप्रयोग</a></div></li>
+                                <li class="topic-item" data-topic-key="it_social" data-keywords="IT, social impacts, samajik prabhav"><input type="checkbox" class="topic-checkbox"><div class="topic-link-wrapper"><a href="#" class="topic-link">सूचना प्रौद्योगिकी के सामाजिक प्रभाव</a></div></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Link Management Modal -->
+    <div id="link-manager-modal" class="modal-overlay">
+        <div class="modal-content">
+            <h3 class="text-xl font-bold text-primary-pastel mb-4 border-b pb-2">टॉपिक लिंक प्रबंधक</h3>
+            <p id="modal-status" class="text-sm text-red-500 mb-4 font-semibold hidden"></p>
+            <form id="link-manager-form" class="space-y-4">
+                <div>
+                    <label for="topic-select" class="block text-sm font-medium text-gray-700 mb-1">टॉपिक चुनें (Topic Select)</label>
+                    <select id="topic-select" class="w-full p-2 border border-gray-300 rounded-lg focus:ring-primary-pastel focus:border-primary-pastel">
+                        <!-- Options will be populated by JS -->
+                    </select>
+                </div>
+                <div>
+                    <label for="link-url" class="block text-sm font-medium text-gray-700 mb-1">URL / लिंक दर्ज करें (Enter URL)</label>
+                    <input type="url" id="link-url" placeholder="https://www.example.com/your-topic-page" class="w-full p-2 border border-gray-300 rounded-lg focus:ring-primary-pastel focus:border-primary-pastel" required>
+                </div>
+                <div class="flex justify-end space-x-3 pt-2">
+                    <button type="button" id="close-link-manager-btn" class="px-4 py-2 text-gray-600 bg-gray-200 rounded-lg hover:bg-gray-300 transition">बंद करें</button>
+                    <button type="submit" id="save-link-btn" class="px-4 py-2 bg-covered text-white rounded-lg shadow-md hover:bg-emerald-600 transition">लिंक सेव करें</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <!-- Footer -->
+    <footer class="text-center p-6 bg-gray-100/70">
+        <!-- Motivational quote section -->
+        <p id="motivational-quote" class="text-gray-600 font-semibold text-lg" data-aos="fade-up">
+            <!-- Quote will be inserted here by JavaScript -->
+        </p>
+        <p class="text-sm mt-2 text-gray-500">
+            © तृतीय श्रेणी अध्यापक सिलेबस डैशबोर्ड | UI/UX Developer: Gemini
+        </p>
+    </footer>
+
+
+    <!-- JavaScript Section -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, onSnapshot, collection } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        
+        // --- GLOBAL CONFIGS & STATUS ---
+        // Canvas Global Variables (used only if present)
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+
+        let app, db, auth;
+        let userId = 'anonymous';
+        let isAuthReady = false; 
+        
+        // NEW: Flag to check if Firebase setup was successful (Local Fallback detection)
+        let isFirebaseActive = false; 
+
+        // --- FIREBASE INITIALIZATION AND AUTH ---
+        async function initFirebase() {
+            // Check if essential configs are available (only true in Canvas environment)
+            const isCanvasEnvironment = initialAuthToken !== null && Object.keys(firebaseConfig).length > 0;
+
+            if (isCanvasEnvironment) {
+                try {
+                    app = initializeApp(firebaseConfig);
+                    db = getFirestore(app);
+                    auth = getAuth(app);
+                    
+                    if (initialAuthToken) {
+                        await signInWithCustomToken(auth, initialAuthToken);
+                    } else {
+                        await signInAnonymously(auth);
+                    }
+
+                    onAuthStateChanged(auth, (user) => {
+                        if (user) {
+                            userId = user.uid;
+                        } else {
+                            userId = 'anonymous_' + (crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).substring(2));
+                        }
+                        console.log("Firebase Auth Ready. User ID:", userId);
+                        isAuthReady = true; 
+                        isFirebaseActive = true; // Firebase is successfully connected
+                        loadTopicLinks(); 
+                    });
+                } catch (error) {
+                    console.error("Firebase initialization failed, switching to LocalStorage:", error);
+                    isFirebaseActive = false;
+                    isAuthReady = true; // Still ready for local ops
+                    loadTopicLinks(); // Load local links instead
+                }
+            } else {
+                console.log("Not in Canvas environment. Using LocalStorage fallback.");
+                isFirebaseActive = false;
+                isAuthReady = true; // Ready for local ops
+                loadTopicLinks(); // Load local links immediately
+            }
+        }
+
+        // --- FIREBASE/LOCALSTORAGE DATA HANDLING ---
+
+        const LOCAL_LINKS_KEY = 'REET_TOPIC_LINKS';
+
+        /**
+         * Returns the reference to the public topic links collection (Firestore).
+         */
+        function getTopicLinksRef() {
+            const publicPath = `/artifacts/${appId}/public/data/topic_links`;
+            return collection(db, publicPath);
+        }
+
+        /**
+         * Saves a topic link using either Firestore (Canvas) or LocalStorage (Local Browser).
+         */
+        async function saveTopicLink(topicKey, url) {
+            const trimmedUrl = url.trim();
+
+            if (!isAuthReady) {
+                return { success: false, message: "डेटाबेस अभी भी शुरू हो रहा है। कृपया कुछ देर प्रतीक्षा करें।" };
+            }
+            
+            if (isFirebaseActive) {
+                // --- FIRESTORE SAVE (Canvas Environment) ---
+                if (!db) return { success: false, message: "डेटाबेस शुरू नहीं हुआ।" }; // Should not happen with new logic
+                
+                try {
+                    const docRef = doc(getTopicLinksRef(), topicKey);
+                    await setDoc(docRef, { url: trimmedUrl });
+                    return { success: true, message: trimmedUrl ? "सफलतापूर्वक सेव किया गया!" : "लिंक सफलतापूर्वक हटाया गया!" };
+                } catch (error) {
+                    let errorMessage = "सेव करने में त्रुटि आई। (Unknown Error)";
+                    if (error.code === 'permission-denied') {
+                        errorMessage = "त्रुटि: डेटाबेस सुरक्षा नियमों के कारण पहुँच अस्वीकार कर दी गई है।";
+                    } else if (error.message) {
+                        errorMessage = "त्रुटि: " + error.message;
+                    }
+                    return { success: false, message: errorMessage };
+                }
+            } else {
+                // --- LOCALSTORAGE SAVE (Local Browser Environment) ---
+                try {
+                    const existingLinks = JSON.parse(localStorage.getItem(LOCAL_LINKS_KEY) || '{}');
+                    
+                    if (trimmedUrl) {
+                        existingLinks[topicKey] = trimmedUrl;
+                    } else {
+                        delete existingLinks[topicKey];
+                    }
+
+                    localStorage.setItem(LOCAL_LINKS_KEY, JSON.stringify(existingLinks));
+                    // Manually trigger the UI update in local mode
+                    updateTopicLinkUI(topicKey, trimmedUrl); 
+                    
+                    return { success: true, message: trimmedUrl ? "सफलतापूर्वक सेव किया गया! (लोकल सेव)" : "लिंक सफलतापूर्वक हटाया गया! (लोकल सेव)" };
+
+                } catch (e) {
+                    console.error("LocalStorage Save Failed:", e);
+                    return { success: false, message: "लोकल सेव करने में त्रुटि आई। (LocalStorage Error)" };
+                }
+            }
+        }
+        
+        /**
+         * Helper function to update the UI element for a specific topic link.
+         */
+        function updateTopicLinkUI(topicKey, url) {
+            const topicElement = document.querySelector(`.topic-item[data-topic-key="${topicKey}"]`);
+            if (topicElement) {
+                const linkElement = topicElement.querySelector('.topic-link');
+                if (linkElement) {
+                    linkElement.href = url || '#';
+                    linkElement.classList.toggle('bg-blue-50', !!url);
+                    linkElement.classList.toggle('hover:bg-blue-100', !!url);
+                    linkElement.target = url ? '_blank' : '_self';
+                    linkElement.title = url ? 'इस टॉपिक का लिंक उपलब्ध है (Click to open)' : 'कोई लिंक नहीं (Add link using Manager)';
+                }
+            }
+        }
+
+
+        /**
+         * Sets up real-time listener (Firestore) or loads from LocalStorage.
+         */
+        function loadTopicLinks() {
+            if (!isAuthReady) return;
+
+            if (isFirebaseActive) {
+                // --- FIRESTORE LOAD (Canvas Environment) ---
+                onSnapshot(getTopicLinksRef(), (snapshot) => {
+                    snapshot.docChanges().forEach(change => {
+                        const data = change.doc.data();
+                        const topicKey = change.doc.id;
+                        const url = data.url;
+                        updateTopicLinkUI(topicKey, url);
+                    });
+                    console.log("Topic links updated from Firestore.");
+                }, (error) => {
+                    console.error("Error listening to topic links:", error);
+                    // Critical Error: Handle loss of connection gracefully if needed
+                });
+
+            } else {
+                // --- LOCALSTORAGE LOAD (Local Browser Environment) ---
+                try {
+                    const savedLinks = JSON.parse(localStorage.getItem(LOCAL_LINKS_KEY) || '{}');
+                    Object.keys(savedLinks).forEach(topicKey => {
+                        updateTopicLinkUI(topicKey, savedLinks[topicKey]);
+                    });
+                    console.log("Topic links loaded from LocalStorage.");
+                } catch (e) {
+                    console.error("LocalStorage Load Failed:", e);
+                }
+            }
+        }
+
+
+        // --- NON-FIREBASE JAVASCRIPT LOGIC ---
+
+        // --- Motivational Quotes Array (omitted for brevity) ---
+        const motivationalQuotes = [
+            "आज का दर्द कल की ताक़त है।",
+            // ... (rest of quotes)
+            "लगातार अभ्यास ही सफलता की कुंजी है।"
+        ];
+        
+        // --- GLOBAL VARIABLES ---
+        let progressChart;
+        const TOPIC_PREFIX = 'REET_TOPIC_'; // Prefix for localStorage keys
+        let allTopicsData = [];
+        let allSubjectContainers; 
+
+        function displayRandomQuote() {
+            const randomIndex = Math.floor(Math.random() * motivationalQuotes.length);
+            const quoteElement = document.getElementById('motivational-quote');
+            if (quoteElement) {
+                quoteElement.textContent = `"${motivationalQuotes[randomIndex]}"`;
+            }
+        }
+
+        // --- COUNTDOWN LOGIC (omitted for brevity) ---
+        const targetDate = new Date("January 17, 2026 00:00:00").getTime();
+        const countdownContainer = document.getElementById('countdown-container');
+
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const distance = targetDate - now;
+
+            if (distance < 0) {
+                countdownContainer.innerHTML = '<div class="text-center w-full font-bold text-red-600 text-xl">परीक्षा हो चुकी है! परिणाम का इंतज़ार करें।</div>';
+                return;
+            }
+
+            const msInDay = 1000 * 60 * 60 * 24;
+            const totalDaysRemaining = Math.floor(distance / msInDay);
+            const months = Math.floor(totalDaysRemaining / 30.4375); 
+            const weeks = Math.floor(totalDaysRemaining / 7); 
+            
+            const displayData = [
+                { value: months, label: 'महीने' },
+                { value: weeks, label: 'सप्ताह' },
+                { value: totalDaysRemaining, label: 'कुल दिन शेष' } 
+            ];
+
+            if (countdownContainer) {
+                let html = '<div id="countdown-top-row" class="flex justify-around items-stretch w-full">'; 
+                displayData.forEach(item => {
+                    const isTotalDays = item.label === 'कुल दिन शेष';
+                    html += `
+                        <div class="countdown-top-item">
+                            <div class="countdown-value ${isTotalDays ? 'text-red-500 !text-xl' : 'text-primary-pastel !text-lg'}">${item.value}</div>
+                            <div class="countdown-label ${isTotalDays ? 'font-bold' : ''}">${item.label}</div>
+                        </div>
+                    `;
+                });
+                html += '</div>';
+                countdownContainer.innerHTML = html;
+            }
+        }
+
+        setInterval(updateCountdown, 3600000); 
+        updateCountdown(); 
+        
+        // --- CORE UI LOGIC (collectTopicData, handleSearch, updateSuggestions, calculateProgress, saveProgress, loadProgress, updateProgressChart, initializeProgressChart omitted for brevity) ---
+
+        function collectTopicData() {
+            allSubjectContainers = document.querySelectorAll('.glass-card[id^="subject-"]');
+            allTopicsData = [];
+            
+            document.querySelectorAll('.topic-item').forEach(item => {
+                const topicLink = item.querySelector('.topic-link');
+                const topicText = topicLink.textContent.toLowerCase();
+                const keywords = item.getAttribute('data-keywords') ? item.getAttribute('data-keywords').toLowerCase() : '';
+                const topicKey = item.getAttribute('data-topic-key');
+
+                allTopicsData.push({
+                    element: item,
+                    key: topicKey,
+                    text: topicText,
+                    keywords: keywords,
+                    displayName: topicLink.textContent,
+                    subjectId: item.closest('.glass-card').id
+                });
+            });
+        }
+        
+        function handleSearch(query) {
+            const searchQuery = query.trim().toLowerCase();
+            const subjectsWithResults = new Set();
+            let isSearching = searchQuery.length > 0;
+
+            allTopicsData.forEach(topic => {
+                const itemElement = topic.element;
+                const matchFound = topic.text.includes(searchQuery) || topic.keywords.includes(searchQuery);
+
+                if (!isSearching) {
+                    itemElement.classList.remove('hidden-search');
+                } else if (matchFound) {
+                    itemElement.classList.remove('hidden-search');
+                    subjectsWithResults.add(topic.subjectId);
+                } else {
+                    itemElement.classList.add('hidden-search');
+                }
+            });
+
+            allSubjectContainers.forEach(subjectContainer => {
+                const content = subjectContainer.querySelector('.accordion-content');
+                const arrow = subjectContainer.querySelector('.accordion-arrow');
+                
+                content.classList.remove('forced-open-search');
+                content.classList.remove('open');
+                arrow.classList.remove('rotated');
+                content.style.maxHeight = '0';
+
+                if (subjectsWithResults.has(subjectContainer.id) && isSearching) {
+                    content.classList.add('forced-open-search');
+                    content.style.maxHeight = '2000px'; 
+                    arrow.classList.add('rotated');
+                } 
+            });
+            
+            updateSuggestions(searchQuery);
+        }
+
+        function updateSuggestions(query) {
+            const suggestionsList = document.getElementById('suggestions-list');
+            if (!suggestionsList) return;
+            
+            suggestionsList.innerHTML = '';
+            
+            if (query.length < 2) {
+                suggestionsList.classList.add('hidden');
+                return;
+            }
+
+            const matchedTopics = new Set();
+            
+            allTopicsData.forEach(topic => {
+                const matchInHindi = topic.text.includes(query);
+                const matchInKeywords = topic.keywords.includes(query);
+                
+                if (matchInHindi || matchInKeywords) {
+                    matchedTopics.add(topic.text);
+                }
+            });
+            
+            if (matchedTopics.size > 0) {
+                let count = 0;
+                matchedTopics.forEach(topicText => {
+                    if (count < 10) { 
+                        const suggestionItem = document.createElement('div');
+                        suggestionItem.classList.add('suggestion-item');
+                        const highlightedText = topicText.replace(new RegExp(query, 'gi'), match => `<strong>${match}</strong>`);
+                        suggestionItem.innerHTML = highlightedText;
+
+                        suggestionItem.addEventListener('click', () => {
+                            document.getElementById('topic-search').value = topicText;
+                            handleSearch(topicText);
+                            suggestionsList.classList.add('hidden');
+                        });
+                        suggestionsList.appendChild(suggestionItem);
+                        count++;
+                    }
+                });
+                suggestionsList.classList.remove('hidden');
+            } else {
+                suggestionsList.classList.add('hidden');
+            }
+        }
+
+        function calculateProgress() {
+            const topicItems = document.querySelectorAll('.topic-item');
+            let total = topicItems.length;
+            let covered = 0;
+
+            topicItems.forEach(item => {
+                if (item.querySelector('.topic-checkbox').checked) {
+                    covered++;
+                }
+            });
+
+            const percentage = total > 0 ? Math.round((covered / total) * 100) : 0;
+            return { total, covered, percentage };
+        }
+
+        function saveProgress(key, isChecked) {
+            try {
+                // We still use localStorage for CHECKBOX state tracking
+                localStorage.setItem(TOPIC_PREFIX + key, isChecked ? 'true' : 'false');
+            } catch (e) {
+                console.error("Could not save progress:", e);
+            }
+        }
+
+        function loadProgress() {
+            document.querySelectorAll('.topic-item').forEach(item => {
+                const key = item.getAttribute('data-topic-key');
+                const checkbox = item.querySelector('.topic-checkbox');
+                
+                const savedState = localStorage.getItem(TOPIC_PREFIX + key);
+                
+                if (savedState === 'true') {
+                    checkbox.checked = true;
+                    item.classList.add('topic-covered');
+                } else {
+                    checkbox.checked = false;
+                    item.classList.remove('topic-covered');
+                }
+            });
+        }
+
+        function updateProgressChart() {
+            const progress = calculateProgress();
+            const remaining = progress.total - progress.covered;
+            const percentage = progress.percentage;
+            
+            if (progressChart) {
+                progressChart.data.datasets[0].data = [progress.covered, remaining];
+                progressChart.options.plugins.title.text = [`कुल टॉपिक: ${progress.total}`, `कवर किए गए: ${progress.covered} (${percentage}%)`];
+                progressChart.update();
+            } else {
+                initializeProgressChart(progress.covered, remaining, progress.total, percentage);
+            }
+        }
+
+        function initializeProgressChart(covered, remaining, total, percentage) {
+            const ctx = document.getElementById('progressChart').getContext('2d');
+            
+            const chartData = {
+                labels: ['कवर किए गए टॉपिक', 'शेष टॉपिक'],
+                datasets: [{
+                    data: [covered, remaining],
+                    backgroundColor: ['#10B981', '#F43F5E'], 
+                    borderColor: '#ffffff',
+                    borderWidth: 2,
+                    hoverOffset: 10,
+                }]
+            };
+
+            const chartConfig = {
+                type: 'doughnut',
+                data: chartData,
+                options: {
+                    responsive: true,
+                    cutout: '75%', 
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                font: { family: 'Baloo 2', size: 14 },
+                                color: '#333',
+                                padding: 20
+                            }
+                        },
+                        title: {
+                            display: true,
+                            text: [`कुल टॉपिक: ${total}`, `कवर किए गए: ${covered} (${percentage}%)`],
+                            font: { family: 'Baloo 2', size: 16, weight: 'bold' },
+                            color: '#1F2937',
+                            padding: { top: 10, bottom: 20 }
+                        },
+                        tooltip: {
+                            titleFont: { family: 'Baloo 2' },
+                            bodyFont: { family: 'Baloo 2' },
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.label || '';
+                                    if (context.parsed !== null) {
+                                        const value = context.parsed;
+                                        const percent = (value / total * 100).toFixed(1);
+                                        label = `${label}: ${value} (${percent}%)`;
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    },
+                    animation: { animateRotate: true, animateScale: true }
+                }
+            };
+
+            progressChart = new Chart(ctx, chartConfig);
+        }
+
+        // --- LINK MANAGER LOGIC ---
+
+        function populateTopicSelector() {
+            const selector = document.getElementById('topic-select');
+            if (!selector) return;
+
+            // Clear previous options
+            selector.innerHTML = '<option value="" selected disabled>--- एक टॉपिक चुनें ---</option>';
+
+            // Group topics by subject for better readability
+            const groupedTopics = allTopicsData.reduce((acc, topic) => {
+                const subject = document.getElementById(topic.subjectId).querySelector('h3').textContent.trim();
+                if (!acc[subject]) {
+                    acc[subject] = [];
+                }
+                acc[subject].push(topic);
+                return acc;
+            }, {});
+
+            for (const subject in groupedTopics) {
+                const optgroup = document.createElement('optgroup');
+                optgroup.label = subject;
+                groupedTopics[subject].forEach(topic => {
+                    const option = document.createElement('option');
+                    option.value = topic.key; // data-topic-key
+                    option.textContent = topic.displayName;
+                    optgroup.appendChild(option);
+                });
+                selector.appendChild(optgroup);
+            }
+        }
+        
+        function setupLinkManager() {
+            const modal = document.getElementById('link-manager-modal');
+            const openBtn = document.getElementById('open-link-manager-btn');
+            const closeBtn = document.getElementById('close-link-manager-btn');
+            const form = document.getElementById('link-manager-form');
+            const urlInput = document.getElementById('link-url');
+            const topicSelect = document.getElementById('topic-select');
+            const statusMessage = document.getElementById('modal-status');
+            
+            // Populate selector when manager opens
+            openBtn.addEventListener('click', () => {
+                populateTopicSelector();
+                modal.classList.add('visible');
+                statusMessage.classList.add('hidden');
+                statusMessage.classList.remove('text-covered', 'text-red-500'); // Reset colors
+                urlInput.value = '';
+                topicSelect.value = ''; // Reset selection
+                
+                // Show warning if Firebase is not active (i.e., using local file)
+                if (!isFirebaseActive) {
+                    statusMessage.textContent = "सूचना: आप लोकल मोड में हैं। लिंक केवल आपके ब्राउज़र में सेव होंगे, किसी अन्य डिवाइस पर नहीं दिखेंगे।";
+                    statusMessage.classList.remove('hidden');
+                    statusMessage.classList.add('text-red-500'); 
+                }
+            });
+
+            closeBtn.addEventListener('click', () => {
+                modal.classList.remove('visible');
+            });
+            
+            modal.addEventListener('click', (e) => {
+                if (e.target.classList.contains('modal-overlay')) {
+                    modal.classList.remove('visible');
+                }
+            });
+
+            // Pre-fill URL if topic is selected and link exists
+            topicSelect.addEventListener('change', () => {
+                const selectedKey = topicSelect.value;
+                const linkElement = document.querySelector(`.topic-item[data-topic-key="${selectedKey}"] .topic-link`);
+                if (linkElement && linkElement.href && linkElement.href !== window.location.href + '#') {
+                    // Only display saved URL if it's not the default '#' link
+                    urlInput.value = linkElement.href.startsWith('http') ? linkElement.href : ''; 
+                } else {
+                    urlInput.value = '';
+                }
+            });
+            
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                statusMessage.classList.add('hidden');
+                statusMessage.classList.remove('text-covered', 'text-red-500'); // Reset colors
+                
+                const topicKey = topicSelect.value;
+                let url = urlInput.value.trim();
+                
+                if (!topicKey) {
+                    statusMessage.textContent = "कृपया पहले एक टॉपिक चुनें।";
+                    statusMessage.classList.remove('hidden');
+                    statusMessage.classList.add('text-red-500');
+                    return;
+                }
+                
+                if (url.toLowerCase().startsWith('file:///')) {
+                    statusMessage.textContent = "त्रुटि: आप किसी लोकल कंप्यूटर फाइल (file:///) को लिंक नहीं कर सकते। कृपया एक वैध वेब URL (https://) दर्ज करें।";
+                    statusMessage.classList.remove('hidden');
+                    statusMessage.classList.add('text-red-500');
+                    return;
+                }
+                
+                if (url && !url.toLowerCase().startsWith('http://') && !url.toLowerCase().startsWith('https://')) {
+                     statusMessage.textContent = "त्रुटि: URL वैध होना चाहिए और 'https://' या 'http://' से शुरू होना चाहिए, या खाली छोड़ दें।";
+                     statusMessage.classList.remove('hidden');
+                     statusMessage.classList.add('text-red-500');
+                     return;
+                }
+                
+                if (!url) {
+                    statusMessage.textContent = "लिंक हटाया जा रहा है... (Clearing Link)";
+                    statusMessage.classList.remove('hidden');
+                } else {
+                     statusMessage.textContent = "लिंक सेव किया जा रहा है... कृपया प्रतीक्षा करें।";
+                     statusMessage.classList.remove('hidden');
+                }
+                
+                // --- CALL SAVE FUNCTION ---
+                const result = await saveTopicLink(topicKey, url);
+                // --- END CALL ---
+
+                if (result.success) {
+                    statusMessage.textContent = result.message;
+                    statusMessage.classList.add('text-covered');
+                    statusMessage.classList.remove('text-red-500');
+                    
+                    if(url) {
+                       urlInput.value = ''; 
+                    }
+                    topicSelect.value = ''; // Reset selection
+                } else {
+                    // Display the specific error message returned by saveTopicLink
+                    statusMessage.textContent = result.message; 
+                    statusMessage.classList.add('text-red-500');
+                    statusMessage.classList.remove('text-covered');
+                }
+            });
+        }
+
+
+        // --- ENTRY POINT ---
+        document.addEventListener('DOMContentLoaded', async () => { 
+            // 1. Initialize Firebase (Handle both Canvas and Local modes)
+            await initFirebase(); 
+
+            // 2. Initialize UI components (rest of logic can now proceed safely)
+            AOS.init({ once: true, duration: 1000, });
+            lucide.createIcons();
+            displayRandomQuote();
+            
+            // 3. Collect topic data (needed for search and link manager UI)
+            collectTopicData();
+            
+            // 4. Load saved checkbox progress (from localStorage - always works)
+            loadProgress();
+
+            // 5. Initialize/Update Progress Chart (uses loaded progress)
+            updateProgressChart();
+
+            // 6. Setup Link Management Interface
+            setupLinkManager();
+
+            // 7. Attach change listener to all checkboxes (for local progress saving)
+            document.querySelectorAll('.topic-checkbox').forEach(checkbox => {
+                checkbox.addEventListener('change', (event) => {
+                    const item = event.target.closest('.topic-item');
+                    const key = item.getAttribute('data-topic-key');
+                    const isChecked = event.target.checked;
+
+                    if (isChecked) {
+                        item.classList.add('topic-covered');
+                    } else {
+                        item.classList.remove('topic-covered');
+                    }
+
+                    saveProgress(key, isChecked);
+                    updateCountdown(); 
+                    updateProgressChart();
+                });
+            });
+            
+            // 8. Attach search event listener
+            const searchInput = document.getElementById('topic-search');
+            if (searchInput) {
+                searchInput.addEventListener('input', (event) => {
+                    handleSearch(event.target.value);
+                });
+                
+                document.addEventListener('click', (event) => {
+                    const suggestionsList = document.getElementById('suggestions-list');
+                    if (!searchInput.contains(event.target) && !suggestionsList.contains(event.target)) {
+                        suggestionsList.classList.add('hidden');
+                    }
+                });
+            }
+
+            // 9. Scroll Progress Bar Logic
+            const progressBar = document.getElementById('progress-bar');
+            window.addEventListener('scroll', () => {
+                const totalHeight = document.body.scrollHeight - window.innerHeight;
+                if (totalHeight <= 0) {
+                    progressBar.style.width = '100%';
+                    return;
+                }
+                const progress = (window.scrollY / totalHeight) * 100;
+                progressBar.style.width = progress + '%';
+            });
+
+            // 10. Accordion/Toggle Logic
+            document.querySelectorAll('.accordion-header').forEach(header => {
+                header.addEventListener('click', (event) => {
+                    const targetId = header.getAttribute('data-target');
+                    const content = document.querySelector(`[data-content="${targetId}"]`);
+                    const arrow = header.querySelector('.accordion-arrow');
+                    
+                    const isCurrentlyOpen = content.classList.contains('open') || content.classList.contains('forced-open-search');
+
+                    if (document.getElementById('topic-search').value.trim().length > 0 && !content.classList.contains('forced-open-search')) return;
+
+                    if (isCurrentlyOpen) {
+                        content.style.maxHeight = '0';
+                        content.classList.remove('open');
+                        content.classList.remove('forced-open-search'); 
+                        arrow.classList.remove('rotated');
+                    } else {
+                        content.style.maxHeight = content.scrollHeight + 'px'; 
+                        content.classList.add('open');
+                        arrow.classList.add('rotated');
+                    }
+                });
+            });
+
+            window.addEventListener('resize', () => {
+                document.querySelectorAll('.accordion-content.open').forEach(content => {
+                    if (!content.classList.contains('forced-open-search')) {
+                        content.style.maxHeight = content.scrollHeight + 'px';
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
