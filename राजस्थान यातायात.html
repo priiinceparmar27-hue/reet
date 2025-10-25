@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>राजस्थान में यातायात के साधन</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts (Noto Sans Devanagari) -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- कस्टम स्टाइल्स --- */
+        body {
+            font-family: 'Noto Sans Devanagari', sans-serif;
+            background-color: #FFFBF5; /* सॉफ्ट क्रीम/बेज */
+            overflow-x: hidden;
+        }
+
+        /* --- टैब बटन स्टाइल --- */
+        .tab-btn {
+            transition: all 0.3s ease-in-out;
+            white-space: nowrap;
+        }
+        .active-tab {
+            color: #6D28D9; /* Purple */
+            font-weight: 600;
+            border-bottom: 3px solid #6D28D9;
+        }
+        .inactive-tab {
+            color: #6b7280; /* text-gray-500 */
+            border-bottom: 3px solid transparent;
+        }
+        .inactive-tab:hover {
+            color: #6D28D9;
+        }
+
+        /* --- टेबल स्टाइल --- */
+        .styled-table th {
+            background-color: #F5F3FF; /* Light Lavender */
+            color: #5B21B6; /* Purple text */
+        }
+        .styled-table tr:nth-child(even) {
+            background-color: #FAFAFC;
+        }
+        .styled-table tr:hover {
+            background-color: #F5F3FF;
+        }
+
+        /* --- ट्रैफिक साइन कार्ड --- */
+        .sign-card {
+            border: 2px solid #FDE68A; /* पीला बॉर्डर */
+            background-color: #FFFBEB; /* हल्का पीला बैकग्राउंड */
+            transition: all 0.3s ease;
+        }
+        .sign-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 10px rgba(250, 204, 21, 0.2);
+        }
+        .sign-card .sign-text-hi {
+            color: #B45309; /* डार्क पीला/ब्राउन टेक्स्ट */
+            font-weight: 500;
+        }
+
+        /* --- हॉरिजॉन्टल स्क्रॉल के लिए --- */
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        .scrollbar-hide {
+            -ms-overflow-style: none; /* IE and Edge */
+            scrollbar-width: none; /* Firefox */
+        }
+        
+        /* --- टैब कंटेंट की ऊंचाई के लिए ट्रांज़िशन --- */
+        #tab-content-wrapper {
+            transition: height 0.4s ease-in-out;
+        }
+    </style>
+</head>
+<body class="min-h-screen antialiased text-gray-800">
+
+    <!-- ===== मुख्य सामग्री ===== -->
+    <main class="w-full max-w-5xl mx-auto p-4 md:p-8">
+
+        <!-- ===== टैब नेविगेशन ===== -->
+        <div class="mb-6 overflow-x-auto scrollbar-hide border-b border-gray-200">
+            <div class="flex space-x-4 md:space-x-8 p-2" role="tablist">
+                <!-- टैब 1 -->
+                <button class="tab-btn flex items-center gap-2 font-medium py-3 px-2 text-sm md:text-base active-tab" data-tab="0" role="tab">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M5 4a2 2 0 012-2h6a2 2 0 012 2v1h-1.5a.5.5 0 00-.5.5v.5a.5.5 0 00.5.5h1.5v1h-1.5a.5.5 0 00-.5.5v.5a.5.5 0 00.5.5h1.5v1H5V4zM4 9a2 2 0 012-2h6a2 2 0 012 2v7a2 2 0 01-2 2H6a2 2 0 01-2-2V9z"/></svg>
+                    <span>परिचय</span>
+                </button>
+                <!-- टैब 2 -->
+                <button class="tab-btn flex items-center gap-2 font-medium py-3 px-2 text-sm md:text-base inactive-tab" data-tab="1" role="tab">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
+                    <span>सड़क सुरक्षा व संकेत</span>
+                </button>
+                <!-- टैब 3 -->
+                <button class="tab-btn flex items-center gap-2 font-medium py-3 px-2 text-sm md:text-base inactive-tab" data-tab="2" role="tab">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"/></svg>
+                    <span>चेतावनी चिह्न</span>
+                </button>
+                <!-- टैब 4 -->
+                <button class="tab-btn flex items-center gap-2 font-medium py-3 px-2 text-sm md:text-base inactive-tab" data-tab="3" role="tab">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M13 6a1 1 0 10-2 0v2H9a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V6z"/><path fill-rule="evenodd" d="M3.5 1a.5.5 0 01.5.5V2a.5.5 0 01-1 0V1.5a.5.5 0 01.5-.5zM6 1.5a.5.5 0 01.5-.5H8a.5.5 0 010 1H6.5a.5.5 0 01-.5-.5zM9 1.5a.5.5 0 01.5-.5h2a.5.5 0 010 1h-2a.5.5 0 01-.5-.5zM12 1.5a.5.5 0 01.5-.5h2a.5.5 0 010 1h-2a.5.5 0 01-.5-.5zM15 1.5a.5.5 0 01.5-.5h1.5a.5.5 0 010 1H15.5a.5.5 0 01-.5-.5zM3 4.5a.5.5 0 01.5-.5H4a.5.5 0 010 1H3.5a.5.5 0 01-.5-.5zM3.5 6a.5.5 0 01.5-.5H4a.5.5 0 010 1H3.5a.5.5 0 01-.5-.5zM3 7.5a.5.5 0 01.5-.5H4a.5.5 0 010 1H3.5a.5.5 0 01-.5-.5zM3.5 9a.5.5 0 01.5-.5H4a.5.5 0 010 1H3.5a.5.5 0 01-.5-.5zM3 10.5a.5.5 0 01.5-.5H4a.5.5 0 010 1H3.5a.5.5 0 01-.5-.5zM3.5 12a.5.5 0 01.5-.5H4a.5.5 0 010 1H3.5a.5.5 0 01-.5-.5zM3 13.5a.5.5 0 01.5-.5H4a.5.5 0 010 1H3.5a.5.5 0 01-.5-.5zM3.5 15a.5.5 0 01.5-.5H4a.G.5 0 010 1H3.5a.5.5 0 01-.5-.5zM3 16.5a.5.5 0 01.5-.5H4a.5.5 0 010 1H3.5a.5.5 0 01-.5-.5zM6 18.5a.5.5 0 01.5-.5H8a.5.5 0 010 1H6.5a.5.5 0 01-.5-.5zM9 18.5a.5.5 0 01.5-.5h2a.5.5 0 010 1h-2a.5.5 0 01-.5-.5zM12 18.5a.5.5 0 01.5-.5h2a.5.5 0 010 1h-2a.5.5 0 01-.5-.5zM15 18.5a.5.5 0 01.5-.5h1.5a.5.5 0 010 1H15.5a.5.5 0 01-.5-.5zM16.5 17a.5.5 0 01.5-.5H18a.5.5 0 010 1h-1.5a.5.5 0 01-.5-.5zM16 15.5a.5.5 0 01.5-.5H18a.5.5 0 010 1h-1.5a.5.5 0 01-.5-.5zM16.5 14a.5.5 0 01.5-.5H18a.5.5 0 010 1h-1.5a.5.5 0 01-.5-.5zM16 12.5a.5.5 0 01.5-.5H18a.5.5 0 010 1h-1.5a.5.5 0 01-.5-.5zM16.5 11a.5.5 0 01.5-.5H18a.5.5 0 010 1h-1.5a.5.5 0 01-.5-.5zM16 9.5a.5.5 0 01.5-.5H18a.5.5 0 010 1h-1.5a.5.5 0 01-.5-.5zM16.5 8a.5.5 0 01.5-.5H18a.5.5 0 010 1h-1.5a.5.5 0 01-.5-.5zM16 6.5a.5.5 0 01.5-.5H18a.5.5 0 010 1h-1.5a.5.5 0 01-.5-.5zM16.5 5a.5.5 0 01.5-.5H18a.5.5 0 010 1h-1.5a.5.5 0 01-.5-.5z" clip-rule="evenodd"/></svg>
+                    <span>सड़क परिवहन</span>
+                </button>
+                <!-- टैब 5 -->
+                <button class="tab-btn flex items-center gap-2 font-medium py-3 px-2 text-sm md:text-base inactive-tab" data-tab="4" role="tab">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M12.316 3.051a1 1 0 01.633 1.265l-4 12a1 1 0 11-1.898-.632l4-12a1 1 0 011.265-.633zM5.707 6.293a1 1 0 010 1.414l-3 3a1 1 0 01-1.414-1.414l3-3a1 1 0 011.414 0zm8 8a1 1 0 01-1.414 0l-3-3a1 1 0 011.414-1.414l3 3a1 1 0 010 1.414zM5.707 13.707a1 1 0 011.414 0l3 3a1 1 0 01-1.414 1.414l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
+                    <span>रेल परिवहन</span>
+                </button>
+                <!-- टैब 6 -->
+                <button class="tab-btn flex items-center gap-2 font-medium py-3 px-2 text-sm md:text-base inactive-tab" data-tab="5" role="tab">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 16.5V3.13a1 1 0 00.894-.577zM11 16.5v-1.18l.26.074a1 1 0 001.17-.127l5-5a1 1 0 00-1.314-1.51l-3.83 3.372-1.7-.486V16.5z"/></svg>
+                    <span>मेट्रो एवं वायु परिवहन</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- ===== टैब कंटेंट कंटेनर ===== -->
+        <div class="overflow-hidden bg-white shadow-xl rounded-xl border border-gray-100" id="tab-content-wrapper">
+            <div class="flex items-start transition-transform duration-500 ease-in-out" id="tab-content-container">
+                
+                <!-- --- आइकन SVG --- -->
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="hidden">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+
+                <!-- --- टैब 1: परिचय --- -->
+                <div class="tab-panel w-full flex-shrink-0 p-8 md:p-10" data-tab-id="0">
+                    
+                    <h2 class="text-3xl font-bold text-gray-800 mb-6">यातायात के साधन</h2>
+                    <hr class="mb-8">
+                    <ul class="list-none space-y-5 text-gray-700 text-lg">
+                        <li class="flex items-start">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 text-teal-500 mr-3 flex-shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            <span>एक स्थान से दूसरे स्थान तक मानव, वस्तुओं एवं विचारों का आदान-प्रदान <strong>परिवहन</strong> कहलाता है।</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 text-teal-500 mr-3 flex-shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            <span>परिवहन के मुख्य साधन <strong>सड़क, रेल एवं हवाई यातायात</strong> हैं।</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 text-teal-500 mr-3 flex-shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            <span><strong>पाइपलाइन</strong> द्वारा तरल एवं गैसीय वस्तुओं को एक स्थान से दूसरे स्थान पर भेजा जाता है।</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 text-teal-500 mr-3 flex-shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            <span>पहिये के आविष्कार के बाद यातायात के साधनों का विकास हुआ।</span>
+                        </li>
+                    </ul>
+
+                    <h2 class="text-3xl font-bold text-gray-800 mt-12 mb-6">परिवहन के प्रकार</h2>
+                    <hr class="mb-8">
+                    <ul class="list-none space-y-5 text-gray-700 text-lg">
+                        <li class="flex items-start">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 text-teal-500 mr-3 flex-shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            <span><strong>सड़क परिवहन:</strong> कम दूरी एवं एक घर से दूसरे घर की सेवाएँ प्रदान करने में सड़क परिवहन सस्ता व शीघ्रगामी है।</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 text-teal-500 mr-3 flex-shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            <span><strong>रेल परिवहन:</strong> दुनिया में सबसे अधिक लोगों का आना जाना तथा माल ढुलाई रेल-यातायात द्वारा होती है।</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 text-teal-500 mr-3 flex-shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            <span><strong>वायु परिवहन:</strong> सबसे महंगा तथा तीव्र परिवहन का साधन है। हेलिकॉप्टर, हवाई जहाज प्रमुख वायु परिवहन के साधन हैं।</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 text-teal-500 mr-3 flex-shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            <span><strong>जल परिवहन:</strong> यह परिवहन का सबसे सस्ता साधन है। नाव, स्टीमर, पानी का जहाज, पनडुब्बी आदि जल परिवहन के साधन हैं।</span>
+                        </li>
+                    </ul>
+
+                    <h2 class="text-3xl font-bold text-gray-800 mt-12 mb-6">वाहनों का वर्गीकरण</h2>
+                    <hr class="mb-8">
+                    <div class="overflow-x-auto rounded-lg shadow-md border">
+                        <table class="styled-table w-full min-w-[600px] text-left text-lg">
+                            <thead class="text-base">
+                                <tr>
+                                    <th class="p-4">वाहन</th>
+                                    <th class="p-4">विवरण</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200">
+                                <tr>
+                                    <td class="p-4 font-medium">केवल सवारी ढोने वाले</td>
+                                    <td class="p-4">मेट्रो, कार, हवाई जहाज, ऑटो, टैक्सी रिक्शा</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-4 font-medium">केवल माल ढोने वाले</td>
+                                    <td class="p-4">रेलगाड़ी, ट्रक, ट्रोली, मालगाड़ी</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-4 font-medium">सवारी व माल दोनों ढोने वाले</td>
+                                    <td class="p-4">वैनगाड़ी, ऊँटगाड़ी, रेलगाड़ी, जहाज</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- --- टैब 2: सड़क सुरक्षा व संकेत --- -->
+                <div class="tab-panel w-full flex-shrink-0 p-8 md:p-10" data-tab-id="1">
+                    
+                    <h2 class="text-3xl font-bold text-gray-800 mb-6">सड़क सुरक्षा</h2>
+                    <hr class="mb-8">
+                    <ul class="list-none space-y-5 text-gray-700 text-lg">
+                        <li class="flex items-start">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 text-teal-500 mr-3 flex-shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            <span>सड़क पर हमेशा बायीं तरफ चलना चाहिए।</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 text-teal-500 mr-3 flex-shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            <span>पैदल चलने के लिए फुटपाथ का उपयोग करें।</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 text-teal-500 mr-3 flex-shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            <span>चौराहे पर सड़क पार करते समय ज़ेब्रा क्रॉसिंग का उपयोग करें।</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 text-teal-500 mr-3 flex-shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            <span>सड़क पार करते समय दायें, फिर बायें देखकर तय करें कि दोनों ओर से कोई वाहन नहीं आ रहा है। तब सड़क पार करें।</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 text-teal-500 mr-3 flex-shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            <span>ओवरटेक दाहिनी तरफ से सावधानीपूर्वक करना चाहिए।</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 text-teal-500 mr-3 flex-shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            <span>दुपहिया वाहन पर हेलमेट एवं चौपहिया वाहन में सीट बेल्ट का प्रयोग करना चाहिए।</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 text-teal-500 mr-3 flex-shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            <span>सड़क पर मुड़ते समय संकेतक का उपयोग करना चाहिए।</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 text-teal-500 mr-3 flex-shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            <span>रात्रि में वाहन चलाते समय संकेतकों (Indicator & Dipper) का प्रयोग करना चाहिए।</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 text-teal-500 mr-3 flex-shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            <span>यातायात बत्ती का पालन करना चाहिए।</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 text-teal-500 mr-3 flex-shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            <span>वाहन चलाते समय मोबाईल, शराब, तेज संगीत का उपयोग नहीं करना चाहिए।</span>
+                        </li>
+                    </ul>
+
+                    <h2 class="text-3xl font-bold text-gray-800 mt-12 mb-6">यातायात के संकेत</h2>
+                    <hr class="mb-8">
+                    <ul class="list-none space-y-5 text-gray-700 text-lg">
+                        <li class="flex items-start">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 text-teal-500 mr-3 flex-shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            <span>मोटर-गाड़ी पर यातायात संकेतों को निम्नलिखित प्रकार से वर्गीकृत किया गया है:-</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 text-teal-500 mr-3 flex-shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            <span><strong>1. आदेशात्मक सड़क चिह्न:</strong> ये चिह्न दर्शाते हैं कि व्यक्ति को क्या करना चाहिए और क्या नहीं करना चाहिए। आमतौर पर आदेशात्मक चिह्न गोल आकृति में और लाल किनारे वाले होते हैं। इनमें से कुछ नीले रंग के होते हैं। जैसे 'हॉर्न बजाएं'।</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 text-teal-500 mr-3 flex-shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            <span><strong>2. सूचना सड़क चिह्न:</strong> इनका उद्देश्य सड़क के उपयोगकर्ताओं को दिशा, गंतव्य स्थान, सड़क के किनारे पर सुविधाओं के बारे में जानकारी देना है। ये सामान्यतया नीले रंग के होते हैं जैसे अस्पताल, पेट्रोल-पम्प, विश्राम स्थल आदि।</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 text-teal-500 mr-3 flex-shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            <span><strong>3. चेतावनी सड़क चिह्न:</strong> ये चिह्न ड्राइवर को आगे की सड़क पर खतरों/परिस्थितियों के बारे में चेतावनी देने के लिए होते हैं। (अगले टैब में देखें)</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- --- टैब 3: चेतावनी चिह्न (डायग्राम) --- -->
+                <div class="tab-panel w-full flex-shrink-0 p-8 md:p-10" data-tab-id="2">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-6">चेतावनी सड़क चिह्न (Warning Signs)</h2>
+                    <hr class="mb-8">
+                    <p class="text-gray-700 text-lg mb-8">ये चिह्न (आमतौर पर त्रिकोण में) ड्राइवर को आगे के खतरों के लिए सचेत करते हैं।</p>
+                    
+                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                        <!-- सभी 42 संकेतों को यहाँ ग्रिड में जोड़ा गया है -->
+                        <div class="sign-card rounded-lg p-3 text-center">
+                            <p class="sign-text-hi">दाहिना मोड़</p><p class="text-sm text-gray-600">Right Hand Curve</p>
+                        </div>
+                        <div class="sign-card rounded-lg p-3 text-center">
+                            <p class="sign-text-hi">बायाँ मोड़</p><p class="text-sm text-gray-600">Left Hand Curve</p>
+                        </div>
+                        <div class="sign-card rounded-lg p-3 text-center">
+                            <p class="sign-text-hi">दाहिना घुमावदार मोड़</p><p class="text-sm text-gray-600">Right Hair Pin Bend</p>
+                        </div>
+                        <div class="sign-card rounded-lg p-3 text-center">
+                            <p class="sign-text-hi">बायाँ घुमावदार मोड़</p><p class="text-sm text-gray-600">Left Hair Pin Bend</p>
+                        </div>
+                        <div class="sign-card rounded-lg p-3 text-center">
+                            <p class="sign-text-hi">दाहिने मुड़कर फिर आगे</p><p class="text-sm text-gray-600">Right Reverse Bend</p>
+                        </div>
+                        <div class="sign-card rounded-lg p-3 text-center">
+                            <p class="sign-text-hi">बायें मुड़कर फिर आगे</p><p class="text-sm text-gray-600">Left Reverse Bend</p>
+                        </div>
+                        <div class="sign-card rounded-lg p-3 text-center">
+                            <p class="sign-text-hi">खड़ी चढ़ाई</p><p class="text-sm text-gray-600">Steep Ascent</p>
+                        </div>
+                        <div class="sign-card rounded-lg p-3 text-center">
+                            <p class="sign-text-hi">सीधी ढलान</p><p class="text-sm text-gray-600">Steep Descent</p>
+                        </div>
+                        <div class="sign-card rounded-lg p-3 text-center">
+                            <p class="sign-text-hi">आगे रास्ता संकरा है</p><p class="text-sm text-gray-600">Narrow Road Ahead</p>
+                        </div>
+                        <div class="sign-card rounded-lg p-3 text-center">
+                            <p class="sign-text-hi">आगे रास्ता चौड़ा है</p><p class="text-sm text-gray-600">Road Widens Ahead</p>
+                        </div>
+                        <div class="sign-card rounded-lg p-3 text-center">
+                            <p class="sign-text-hi">संकरा पुल</p><p class="text-sm text-gray-600">Narrow Bridge</p>
+                        </div>
+                        <div class="sign-card rounded-lg p-3 text-center">
+                            <p class="sign-text-hi">फिसलन भरी सड़क</p><p class="text-sm text-gray-600">Slippery Road</p>
+                        </div>
+                        <div class="sign-card rounded-lg p-3 text-center">
+                            <p class="sign-text-hi">बिखरी बजरी</p><p class="text-sm text-gray-600">Loose Gravel</p>
+                        </div>
+                        <div class="sign-card rounded-lg p-3 text-center">
+                            <p class="sign-text-hi">साइकिल क्रॉसिंग</p><p class="text-sm text-gray-600">Cycle Crossing</p>
+                        </div>
+                        <div class="sign-card rounded-lg p-3 text-center">
+                            <p class="sign-text-hi">पैदल क्रॉसिंग</p><p class="text-sm text-gray-600">Pedestrian Crossing</p>
+                        </div>
+                        <div class="sign-card rounded-lg p-3 text-center">
+                            <p class="sign-text-hi">आगे स्कूल है</p><p class="text-sm text-gray-600">School Ahead</p>
+                        </div>
+                        <div class="sign-card rounded-lg p-3 text-center">
+                            <p class="sign-text-hi">यातायात संकेत</p><p class="text-sm text-gray-600">Traffic Signal</p>
+                        </div>
+                        <div class="sign-card rounded-lg p-3 text-center">
+                            <p class="sign-text-hi">पशु</p><p class="text-sm text-gray-600">Cattle</p>
+                        </div>
+                        <div class="sign-card rounded-lg p-3 text-center">
+                            <p class="sign-text-hi">नौका</p><p class="text-sm text-gray-600">Ferry</p>
+                        </div>
+                        <div class="sign-card rounded-lg p-3 text-center">
+                            <p class="sign-text-hi">पत्थर लुढ़कने की संभावना</p><p class="text-sm text-gray-600">Falling Rocks</p>
+                        </div>
+                        <div class="sign-card rounded-lg p-3 text-center">
+                            <p class="sign-text-hi">खतरनाक गहराई</p><p class="text-sm text-gray-600">Dangerous Dip</p>
+                        </div>
+                        <div class="sign-card rounded-lg p-3 text-center">
+                            <p class="sign-text-hi">ऊबड़-खाबड़ सड़क</p><p class="text-sm text-gray-600">Hump or Rough Road</p>
+                        </div>
+                        <div class="sign-card rounded-lg p-3 text-center">
+                            <p class="sign-text-hi">आगे अवरोध है</p><p class="text-sm text-gray-600">Barrier Ahead</p>
+                        </div>
+                        <div class="sign-card rounded-lg p-3 text-center">
+                            <p class="sign-text-hi">मध्य पट्टी में अंतर</p><p class="text-sm text-gray-600">Gap in Median</p>
+                        </div>
+                        <div class="sign-card rounded-lg p-3 text-center">
+                            <p class="sign-text-hi">चौराहा</p><p class="text-sm text-gray-600">Cross Road</p>
+                        </div>
+                        <div class="sign-card rounded-lg p-3 text-center">
+                            <p class="sign-text-hi">बायीं ओर पार्श्व सड़क</p><p class="text-sm text-gray-600">Side Road Left</p>
+                        </div>
+                        <div class="sign-card rounded-lg p-3 text-center">
+                            <p class="sign-text-hi">दाहिनी ओर पार्श्व सड़क</p><p class="text-sm text-gray-600">Side Road Right</p>
+                        </div>
+                        <div class="sign-card rounded-lg p-3 text-center">
+                            <p class="sign-text-hi">टी-चौराहा</p><p class="text-sm text-gray-600">T-Intersection</p>
+                        </div>
+                        <div class="sign-card rounded-lg p-3 text-center">
+                            <p class="sign-text-hi">वाई-सड़क संगम</p><p class="text-sm text-gray-600">Y-Intersection</p>
+                        </div>
+                        <div class="sign-card rounded-lg p-3 text-center">
+                            <p class="sign-text-hi">बाईं-सड़क संगम</p><p class="text-sm text-gray-600">Y-Intersection</p>
+                        </div>
+                        <div class="sign-card rounded-lg p-3 text-center">
+                            <p class="sign-text-hi">विषम सड़क संगम</p><p class="text-sm text-gray-600">Staggered Intersection</p>
+                        </div>
+                        <div class="sign-card rounded-lg p-3 text-center">
+                            <p class="sign-text-hi">विषम सड़क संगम</p><p class="text-sm text-gray-600">Staggered Intersection</p>
+                        </div>
+                        <div class="sign-card rounded-lg p-3 text-center">
+                            <p class="sign-text-hi">गोल चक्कर</p><p class="text-sm text-gray-600">Round About</p>
+                        </div>
+                        <div class="sign-card rounded-lg p-3 text-center">
+                            <p class="sign-text-hi">घाट या नदी का किनारा</p><p class="text-sm text-gray-600">Quayside or River Bank</p>
+                        </div>
+                        <div class="sign-card rounded-lg p-3 text-center">
+                            <p class="sign-text-hi">आदमी काम पर हैं</p><p class="text-sm text-gray-600">Men at Work</p>
+                        </div>
+                        <div class="sign-card rounded-lg p-3 text-center">
+                            <p class="sign-text-hi">रक्षित समपार</p><p class="text-sm text-gray-600">Guarded Level Crossing</p>
+                        </div>
+                        <div class="sign-card rounded-lg p-3 text-center">
+                            <p class="sign-text-hi">मानव रहित समपार</p><p class="text-sm text-gray-600">Unguarded Level Crossing</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- --- टैब 4: सड़क परिवहन व परियोजनाएं --- -->
+                <div class="tab-panel w-full flex-shrink-0 p-8 md:p-10" data-tab-id="3">
+                    
+                    <h2 class="text-3xl font-bold text-gray-800 mb-6">राष्ट्रीय राजमार्ग (NH)</h2>
+                    <hr class="mb-8">
+                    <ul class="list-none space-y-5 text-gray-700 text-lg">
+                        <li class="flex items-start">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 text-teal-500 mr-3 flex-shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            <span><b>NH-62:</b> श्रीगंगानगर-बीकानेर-नागौर-जोधपुर-पाली-सिरोही</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 text-teal-500 mr-3 flex-shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            <span><b>NH-68:</b> जैसलमेर-बाड़मेर-जालौर</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 text-teal-500 mr-3 flex-shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            <span><b>NH-11:</b> खेलड़ी (झुंझुनू)-फतेहपुर (सीकर)-रतनगढ़ (चुरू)-बीकानेर-फलौदी-जोधपुर-जैसलमेर</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 text-teal-500 mr-3 flex-shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            <span><b>सबसे लम्बा NH:</b> NH-11 (लम्बाई- 760 km)। (पुराना NH-15)</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 text-teal-500 mr-3 flex-shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            <span><b>NH-21:</b> भरतपुर-दौसा-जयपुर</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 text-teal-500 mr-3 flex-shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            <span><b>सबसे छोटा NH:</b> NH-919 (5 कि.मी.) तथा पुराना NH-71B है।</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 text-teal-500 mr-3 flex-shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            <span><b>स्वर्णिम चतुर्भुज:</b> दिल्ली से मुम्बई के बीच का 722 km राजस्थान में। (अलवर-जयपुर-अजमेर-भीलवाड़ा-चित्तौड़गढ़-उदयपुर-डूंगरपुर)</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 text-teal-500 mr-3 flex-shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            <span><b>उत्तर-दक्षिण गलियारा:</b> श्रीनगर से कन्याकुमारी, 28 km राजस्थान में (धौलपुर जिले में) राष्ट्रीय राजमार्ग-44 पर।</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 text-teal-500 mr-3 flex-shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            <span><b>पूर्व-पश्चिम गलियारा:</b> पोरबंदर से सिलचर, 528 km राजस्थान में राष्ट्रीय राजमार्ग-27 पर। (सिरोही-उदयपुर-चित्तौड़गढ़-भीलवाड़ा-बूँदी-कोटा-बारां)</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 text-teal-500 mr-3 flex-shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            <span><b>गलियारा संगम:</b> NH-48 एवं NH-27 का संयुक्त मार्ग है।</span>
+                        </li>
+                    </ul>
+
+                    <h2 class="text-3xl font-bold text-gray-800 mt-12 mb-6">ग्रीनफील्ड एक्सप्रेस-वे</h2>
+                    <hr class="mb-8">
+                    <ul class="list-none space-y-5 text-gray-700 text-lg">
+                        <li class="flex items-start">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 text-teal-500 mr-3 flex-shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            <span><b>दिल्ली-वडोदरा:</b> 442 km. (अलवर, भरतपुर, दौसा, सवाईमाधोपुर, टोंक, बूँदी, कोटा तथा झालावाड़)</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 text-teal-500 mr-3 flex-shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            <span><b>सांचौर-अमृतसर:</b> 856 km. (गंगानगर, हनुमानगढ़, बीकानेर, फलौदी, जोधपुर, बालोतारा तथा जालौर)</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 text-teal-500 mr-3 flex-shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            <span><b>भटिण्डा-अजमेर:</b> 489 km. (हनुमानगढ़, चुरू, सीकर, नागौर व अजमेर)</span>
+                        </li>
+                    </ul>
+
+                    <h2 class="text-3xl font-bold text-gray-800 mt-12 mb-6">सड़क विकास परियोजनाएं</h2>
+                    <hr class="mb-8">
+                    <ul class="list-none space-y-5 text-gray-700 text-lg">
+                        <li class="flex items-start">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 text-teal-500 mr-3 flex-shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            <span><b>भारतमाला-1:</b> राजस्थान को भारत की एक्सप्रेस-वे राजधानी बनाने के लिए 3 फरवरी, 2024 को शिलान्यास। बजट 2024-25 में 9 ग्रीन फील्ड एक्सप्रेस-वे। 17 एक्सप्रेस-वे की डीपीआर 13 दिसम्बर, 2024 को अनुमोदित।</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 text-teal-500 mr-3 flex-shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            <span><b>SARP & PMGSY:</b> 52 परियोजनाएँ प्रगति पर, जिसमें से 7 परियोजनाएँ पूर्ण।</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 text-teal-500 mr-3 flex-shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            <span><b>NHAI (NHDP):</b> जुलाई, 2015 से 16 कार्य (845.32 km)। 5 कार्य पूर्ण, 11 कार्य प्रगति पर।</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 text-teal-500 mr-3 flex-shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            <span><b>HAM (हाइब्रिड एन्युटी मॉडल):</b> 2750 km के 9 ग्रीन फील्ड एक्सप्रेस-वे बनाए जाएंगे।</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 text-teal-500 mr-3 flex-shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            <span><b>राज्य सड़क नेटवर्क:</b> 21,000 km सड़कें। प्रत्येक विधानसभा क्षेत्र को 10-10 करोड़, जिला मुख्यालयों को 15-15 करोड़।</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 text-teal-500 mr-3 flex-shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            <span><b>सड़क सुरक्षा:</b> 20 करोड़ का कोष। प्रथम चरण में 15 शहरों में।</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 text-teal-500 mr-3 flex-shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            <span><b>PPP मोड पर परियोजनाएं:</b> राजस्थान राज्य राजमार्ग निवेश कार्यक्रम-1 (2017-22), कार्यक्रम-2 (2019-24, ADB पोषित), कार्यक्रम-3 (2023-26, ADB पोषित)।</span>
+                        </li>
+                    </ul>
+
+                    <h2 class="text-3xl font-bold text-gray-800 mt-12 mb-6">अन्य सड़क योजनाएं</h2>
+                    <hr class="mb-8">
+                    <ul class="list-none space-y-5 text-gray-700 text-lg">
+                        <li class="flex items-start">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 text-teal-500 mr-3 flex-shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            <span><b>राजस्थान राज्य राजमार्ग विकास कार्यक्रम-II:</b> (2019 से 2024) विश्व बैंक द्वारा वित्त पोषित।</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 text-teal-500 mr-3 flex-shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            <span><b>राजस्थान रोड़ विजन 2025:</b> (2000 से 2025)</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 text-teal-500 mr-3 flex-shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            <span><b>प्रधानमंत्री ग्राम सड़क योजना:</b> 25 दिसंबर 2000 से शुरू। आगामी 2 वर्षों में 1600 गाँवों को 'डामर' सड़कों में बदलना।</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 text-teal-500 mr-3 flex-shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            <span><b>मुख्यमंत्री सड़क योजना:</b> (2005) - धार्मिक व पर्यटक स्थलों को सड़कों से जोड़ना।</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 text-teal-500 mr-3 flex-shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            <span><b>गौरव पथ:</b> (2014-15) - गाँवों में मुख्य सड़क को पक्का करना।</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 text-teal-500 mr-3 flex-shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            <span><b>प्रधानमंत्री जनजाति योजना:</b> 36 तहसीलों में 98.69 कि.मी. नई सड़कों का निर्माण।</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 text-teal-500 mr-3 flex-shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            <span><b>आगामी वर्ष:</b> 5000 से अधिक आबादी वाले 250 गाँवों में सीमेंट कंक्रीट की अटल प्रगति पथों का निर्माण।</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 text-teal-500 mr-3 flex-shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            <span><b>RCRVVP (1982):</b> (राजस्थान कृषि विपणन बोर्ड)</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 text-teal-500 mr-3 flex-shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            <span><b>CRIF:</b> शत-प्रतिशत भारत सरकार द्वारा वित्तपोषित।</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 text-teal-500 mr-3 flex-shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            <span><b>सड़क विकास नीति-2013:</b> 1994 के बाद 2013 में पुनः।</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 text-teal-500 mr-3 flex-shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            <span><b>राजस्थान राज्य राजमार्ग अधिनियम, 2014:</b> 1 सितम्बर, 2023 से क्रियाशील। (31 मार्च, 2024 तक) 57 राज्य राजमार्गों को देखरेख।</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- --- टैब 5: रेल परिवहन --- -->
+                <div class="tab-panel w-full flex-shrink-0 p-8 md:p-10" data-tab-id="4">
+                    
+                    <h2 class="text-3xl font-bold text-gray-800 mb-6">रेल परिवहन: इतिहास एवं लम्बाई</h2>
+                    <hr class="mb-8">
+                    <ul class="list-none space-y-5 text-gray-700 text-lg">
+                        <li class="flex items-start">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 text-teal-500 mr-3 flex-shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            <span><b>प्रथम रेल:</b> 1874 में आगरा फोर्ट से बांदीकुई (दौसा) के मध्य।</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 text-teal-500 mr-3 flex-shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            <span><b>नई रेल सेवा:</b> मेड़ता रोड से मेड़ता सिटी के बीच (मार्च 2022)।</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 text-teal-500 mr-3 flex-shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            <span><b>कुल लम्बाई:</b> 6046 कि.मी. (मार्च 2022 तक), जो भारत के कुल रेलमार्ग का 8.89 प्रतिशत है।</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 text-teal-500 mr-3 flex-shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            <span><b>रेल मंडलों में विभाजन (5 मंडल):</b> जयपुर, बीकानेर, अजमेर, जोधपुर, कोटा (कोटा मंडल पश्चिम-मध्य रेलवे जोन में है)।</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 text-teal-500 mr-3 flex-shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            <span><b>उत्तर पश्चिम रेलवे (NWR):</b> मुख्यालय जयपुर में है। इसमें (जयपुर, बीकानेर, अजमेर, जोधपुर) मंडल आते हैं।</span>
+                        </li>
+                    </ul>
+
+                    <h2 class="text-3xl font-bold text-gray-800 mt-12 mb-6">रेल परिवहन: संस्थान एवं तथ्य</h2>
+                    <hr class="mb-8">
+                    <ul class="list-none space-y-5 text-gray-700 text-lg">
+                        <li class="flex items-start">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 text-teal-500 mr-3 flex-shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            <span><b>रेल प्रशिक्षण संस्थान:</b> उदयपुर में।</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 text-teal-500 mr-3 flex-shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            <span><b>रेलवे अनुसंधान एवं परीक्षण केन्द्र:</b> पचपदरा (बालोतरा)</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 text-teal-500 mr-3 flex-shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            <span><b>सिमको वैगन फैक्टरी:</b> भरतपुर (1957)</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 text-teal-500 mr-3 flex-shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            <span><b>लोको एण्ड कैरिज वर्कशॉप:</b> अजमेर (रेल इंजन), वर्तमान में यह संयंत्र बंद है।</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 text-teal-500 mr-3 flex-shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            <span><b>एशिया का सबसे बड़ा मीटर गेज यार्ड:</b> फुलेरा जंक्शन।</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 text-teal-500 mr-3 flex-shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            <span><b>भारत गौरव रेल:</b> पाली (मारवाड़) स्टेशन को मॉडल स्टेशन बनाना।</span>
+                        </li>
+                    </ul>
+
+                    <h2 class="text-3xl font-bold text-gray-800 mt-12 mb-6">राजस्थान में 4 वंदे भारत एक्सप्रेस</h2>
+                    <hr class="mb-8">
+                    <ul class="list-none space-y-5 text-gray-700 text-lg">
+                        <li class="flex items-start">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 text-teal-500 mr-3 flex-shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            <span>अजमेर - चंडीगढ़</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 text-teal-500 mr-3 flex-shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            <span>जोधपुर - साबरमती</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 text-teal-500 mr-3 flex-shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            <span>उदयपुर सिटी - जयपुर</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 text-teal-500 mr-3 flex-shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            <span>उदयपुर सिटी - आगरा कैंट</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- --- टैब 6: मेट्रो एवं वायु परिवहन --- -->
+                <div class="tab-panel w-full flex-shrink-0 p-8 md:p-10" data-tab-id="5">
+                    
+                    <h2 class="text-3xl font-bold text-gray-800 mb-6">जयपुर मेट्रो रेल कॉर्पोरेशन</h2>
+                    <hr class="mb-8">
+                    <ul class="list-none space-y-5 text-gray-700 text-lg">
+                        <li class="flex items-start">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 text-teal-500 mr-3 flex-shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            <span><b>फेज-1ए (मानसरोवर से चांदपोल):</b> संचालन 3 जून 2015, पूर्णरूप से राज्य सरकार द्वारा वित्त पोषित।</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 text-teal-500 mr-3 flex-shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            <span><b>फेज-1बी (चांदपोल से बड़ी चौपड़):</b> संचालन 23 सितम्बर 2020, एशियाई विकास बैंक तथा राज्य सरकार द्वारा वित्त पोषित।</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 text-teal-500 mr-3 flex-shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            <span><b>फेज-1सी (बड़ी चौपड़ से ट्रांसपोर्ट नगर):</b> प्रगति पर।</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 text-teal-500 mr-3 flex-shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            <span><b>फेज-1डी (मानसरोवर से 200 फीट बायपास अजमेर रोड़):</b> प्रगति पर।</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 text-teal-500 mr-3 flex-shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            <span><b>फेज-2 (सीतापुरा से विद्याधर नगर तक प्रस्तावित):</b> यह परियोजना भारत व राजस्थान सरकार के बीच संयुक्त उद्यम (50:50) का गठन किया जाना प्रक्रियाधीन है।</span>
+                        </li>
+                    </ul>
+
+                    <h2 class="text-3xl font-bold text-gray-800 mt-12 mb-6">वायु परिवहन</h2>
+                    <hr class="mb-8">
+                    <ul class="list-none space-y-5 text-gray-700 text-lg">
+                        <li class="flex items-start">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 text-teal-500 mr-3 flex-shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            <span>राजस्थान में सबसे पहले जोधपुर में निजी क्षेत्र में वायु परिवहन शुरू हुआ तथा यहाँ एक <b>फ्लाइंग क्लब</b> की स्थापना की गई थी।</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 text-teal-500 mr-3 flex-shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            <span><b>सांगानेर अन्तर्राष्ट्रीय हवाई अड्डा (जयपुर)</b></span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 text-teal-500 mr-3 flex-shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            <span><b>रातानाडा हवाई अड्डा - जोधपुर</b> (वायु सेना द्वारा भी उपयोग)</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 text-teal-500 mr-3 flex-shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            <span><b>डबोक हवाई अड्डा - उदयपुर</b></span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 text-teal-500 mr-3 flex-shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            <span><b>कोटा हवाई अड्डा - कोटा</b></span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 text-teal-500 mr-3 flex-shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            <span><b>किशनगढ़ हवाई अड्डा - किशनगढ़</b> (अक्टूबर 2017)</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 text-teal-500 mr-3 flex-shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            <span><b>जैसलमेर हवाई अड्डा - जैसलमेर</b> (वायुसेना द्वारा भी उपयोग)</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 text-teal-500 mr-3 flex-shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            <span><b>सूरतगढ़ (गंगानगर)</b> - वायुसेना हेतु।</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 text-teal-500 mr-3 flex-shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            <span><b>नाल हवाई अड्डा (बीकानेर)</b> - भूमिगत हवाई अड्डा, वायुसेना के उपयोग हेतु।</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 text-teal-500 mr-3 flex-shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            <span><b>फलौदी (जोधपुर)</b> - वायुसेना हेतु।</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 text-teal-500 mr-3 flex-shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            <span><b>उतरलाई (बाड़मेर)</b> - वायुसेना व नागरिक सेवा हेतु।</span>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+
+    </main>
+
+    <!-- ===== फुटर ===== -->
+    <footer class="text-center p-6 bg-transparent mt-10">
+        <p class="text-gray-500 text-sm">यह वेबपेज प्रदान की गई छवियों से जानकारी के आधार पर शैक्षिक उद्देश्य के लिए बनाया गया है।</p>
+    </footer>
+
+    <!-- ===== जावास्क्रिप्ट (टैब स्विचिंग के लिए) ===== -->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const tabButtons = document.querySelectorAll('.tab-btn');
+            const tabContentContainer = document.getElementById('tab-content-container');
+            const tabContentWrapper = document.getElementById('tab-content-wrapper');
+            const tabPanels = document.querySelectorAll('.tab-panel');
+
+            function showTab(tabIndex) {
+                // सभी बटन्स को इनएक्टिव करें
+                tabButtons.forEach(btn => {
+                    btn.classList.add('inactive-tab');
+                    btn.classList.remove('active-tab');
+                    btn.setAttribute('aria-selected', 'false');
+                });
+
+                // एक्टिव बटन को स्टाइल करें
+                const activeButton = document.querySelector(`.tab-btn[data-tab="${tabIndex}"]`);
+                activeButton.classList.remove('inactive-tab');
+                activeButton.classList.add('active-tab');
+                activeButton.setAttribute('aria-selected', 'true');
+
+                // कंटेंट को "स्लाइड" करें
+                tabContentContainer.style.transform = `translateX(-${tabIndex * 100}%)`;
+
+                // --- एक्टिव पैनल की ऊंचाई के हिसाब से कंटेनर की ऊंचाई सेट करें ---
+                const activePanel = tabPanels[tabIndex];
+                if (activePanel) {
+                    // एक्टिव पैनल की वास्तविक ऊंचाई लें
+                    tabContentWrapper.style.height = `${activePanel.scrollHeight}px`;
+                }
+            }
+
+            // सभी टैब बटन्स पर क्लिक लिस्नर जोड़ें
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const tabIndex = button.getAttribute('data-tab');
+                    showTab(tabIndex);
+                });
+            });
+
+            // डिफ़ॉल्ट रूप से पहला टैब दिखाएं (और ऊंचाई सेट करें)
+            setTimeout(() => {
+                showTab(0);
+                // ट्रांज़िशन को पहली बार लोड होने के बाद ही जोड़ें
+                tabContentWrapper.style.transition = 'height 0.4s ease-in-out';
+            }, 100);
+            
+            // --- स्क्रीन रिसाइज़ होने पर ऊंचाई को एडजस्ट करें ---
+            window.addEventListener('resize', () => {
+                const activeTabIndex = document.querySelector('.active-tab').getAttribute('data-tab');
+                // रिसाइज़ होने पर ऊंचाई को फिर से सेट करें
+                const activePanel = tabPanels[activeTabIndex];
+                if (activePanel) {
+                    tabContentWrapper.style.height = `${activePanel.scrollHeight}px`;
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>
+
